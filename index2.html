@@ -24,11 +24,9 @@
             max-width: 430px;
             margin: 0 auto;
             position: relative;
-            background: linear-gradient(180deg, #87CEEB 0%, #E8F5E9 40%, #90EE90 100%);
             overflow: hidden;
         }
 
-        /* 首页 - 院子场景 */
         #home-page {
             width: 100%;
             height: 100%;
@@ -36,6 +34,17 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        #home-page.day {
+            background-image: url('assets/garden-day.png');
+        }
+
+        #home-page.night {
+            background-image: url('assets/garden-night.png');
         }
 
         /* 天空和云朵 */
@@ -65,8 +74,8 @@
             100% { transform: translateX(430px); }
         }
 
-        /* 骨头数量显示 */
-        #bone-counter {
+        /* 蘑菇币数量显示 */
+        #mushroom-counter {
             position: absolute;
             top: 20px;
             right: 20px;
@@ -80,11 +89,11 @@
             z-index: 100;
         }
 
-        .bone-icon {
+        .mushroom-icon {
             font-size: 24px;
         }
 
-        #bone-num {
+        #mushroom-num {
             font-size: 20px;
             font-weight: bold;
             color: #8B691E;
@@ -114,114 +123,48 @@
         .ground {
             position: absolute;
             bottom: 0;
-            width: 100%;
-            height: 35%;
-            background: linear-gradient(180deg, #7CB342 0%, #558B2F 100%);
+            width: 430px;
+            height: 350px;
+            background: transparent;
             border-radius: 50% 50% 0 0 / 20px 20px 0 0;
         }
 
-        /* 蘑菇屋 */
-        .mushroom-house {
-            position: absolute;
-            bottom: 25%;
-            right: 5%;
-            width: 120px;
-            height: 120px;
-        }
-        .mushroom-cap {
-            width: 100px;
-            height: 60px;
-            background: linear-gradient(180deg, #FF6B6B 0%, #EE5A5A 100%);
-            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-            position: relative;
-            margin: 0 auto;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        }
-        .mushroom-cap::after {
-            content: '';
-            position: absolute;
-            width: 15px;
-            height: 15px;
-            background: white;
-            border-radius: 50%;
-            top: 15px;
-            left: 20px;
-            opacity: 0.8;
-        }
-        .mushroom-cap::before {
-            content: '';
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background: white;
-            border-radius: 50%;
-            top: 25px;
-            right: 25px;
-            opacity: 0.6;
-        }
-        .mushroom-stem {
-            width: 60px;
-            height: 50px;
-            background: linear-gradient(180deg, #FFF8E7 0%, #F5E6D3 100%);
-            margin: -5px auto 0;
-            border-radius: 0 0 10px 10px;
-            position: relative;
-        }
-        .door {
-            width: 25px;
-            height: 30px;
-            background: #8B691E;
-            border-radius: 12px 12px 0 0;
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-        }
+        
 
-        /* 骨头摊 */
-        #bone-stall {
+        /* 蘑菇样式 */
+        .mushroom {
             position: absolute;
-            bottom: 30%;
-            left: 8%;
-            width: 70px;
-            height: 70px;
             cursor: pointer;
             z-index: 50;
-            transition: transform 0.2s;
+            transition: transform 0.3s ease;
         }
-        #bone-stall:active { transform: scale(0.9); }
-
-        .stall-table {
+        .mushroom:hover {
+            transform: scale(1.1);
+        }
+        .mushroom.small {
+            width: 40px;
+            height: 40px;
+        }
+        .mushroom.large {
             width: 60px;
-            height: 8px;
-            background: #8B691E;
-            border-radius: 4px;
-            position: absolute;
-            bottom: 20px;
-            left: 5px;
+            height: 60px;
         }
-        .stall-leg {
-            width: 6px;
-            height: 20px;
-            background: #6B4E1E;
-            position: absolute;
-            bottom: 0;
+        .mushroom.growing {
+            animation: mushroom-grow 0.5s ease-out forwards;
         }
-        .stall-leg.left { left: 10px; }
-        .stall-leg.right { right: 10px; }
+        .mushroom.disappearing {
+            animation: mushroom-disappear 0.5s ease-out forwards;
+        }
 
-        .stall-bone {
-            position: absolute;
-            top: 5px;
-            font-size: 28px;
-            animation: bone-bounce 1s infinite;
+        @keyframes mushroom-grow {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+            100% { transform: scale(1); }
         }
-        .stall-bone:nth-child(4) { left: 10px; animation-delay: 0s; }
-        .stall-bone:nth-child(5) { left: 30px; animation-delay: 0.3s; }
 
-        @keyframes bone-bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
+        @keyframes mushroom-disappear {
+            0% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(1.5); }
         }
 
         /* 小H角色 */
@@ -363,27 +306,48 @@
         #go-btn {
             position: absolute;
             bottom: 8%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 160px;
-            height: 50px;
+            left: 20px;
+            transform: none;
+            width: 100px;
+            height: 45px;
             background: linear-gradient(180deg, #FF6B6B 0%, #EE5A5A 100%);
             border: none;
-            border-radius: 25px;
+            border-radius: 20px;
             color: white;
-            font-size: 20px;
+            font-size: 16px;
             font-weight: bold;
             cursor: pointer;
             box-shadow: 0 4px 12px rgba(238, 90, 90, 0.4);
             z-index: 100;
             transition: all 0.2s;
         }
-        #go-btn:active { transform: translateX(-50%) scale(0.95); }
+        #go-btn:active { transform: scale(0.95); }
         #go-btn:disabled {
             background: #ccc;
             box-shadow: none;
             cursor: not-allowed;
         }
+
+        /* 商店按钮 */
+        #shop-btn {
+            position: absolute;
+            bottom: 8%;
+            right: 20px;
+            transform: none;
+            width: 100px;
+            height: 45px;
+            background: linear-gradient(180deg, #4ECDC4 0%, #44A3A0 100%);
+            border: none;
+            border-radius: 20px;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(78, 205, 196, 0.4);
+            z-index: 100;
+            transition: all 0.2s;
+        }
+        #shop-btn:active { transform: scale(0.95); }
 
         /* 状态提示 */
         #status-text {
@@ -452,6 +416,158 @@
             font-weight: bold;
             color: #5D3A1A;
             margin-bottom: 20px;
+        }
+
+        /* 商店和物品栏样式 */
+        .shop-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+        .shop-tab {
+            padding: 8px 20px;
+            border-radius: 20px;
+            background: #F5F5F5;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+        .shop-tab.active {
+            background: #4ECDC4;
+            color: white;
+        }
+
+        .shop-items {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .shop-item {
+            background: #FFF8E7;
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            border: 2px solid #E8D5B7;
+            transition: all 0.2s;
+        }
+        .shop-item:hover {
+            border-color: #F5A623;
+            transform: translateY(-2px);
+        }
+        .shop-item.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .item-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .item-name {
+            font-weight: bold;
+            color: #5D3A1A;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .item-desc {
+            font-size: 12px;
+            color: #8B7355;
+            margin-bottom: 10px;
+            min-height: 30px;
+        }
+
+        .item-price {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            color: #E53935;
+            font-weight: bold;
+        }
+
+        .buy-btn {
+            background: linear-gradient(180deg, #4CAF50 0%, #43A047 100%);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: all 0.2s;
+        }
+        .buy-btn:hover { transform: scale(1.05); }
+        .buy-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* 物品栏样式 */
+        .inventory-empty {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        .empty-icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+            animation: bounce 1s infinite;
+        }
+        .empty-text {
+            font-size: 16px;
+            color: #8B7355;
+            margin-bottom: 20px;
+        }
+
+        .inventory-items {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+
+        .inventory-item {
+            background: linear-gradient(180deg, #FFF8E7 0%, #F5E6D3 100%);
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        .inventory-item:hover {
+            border-color: #F5A623;
+            transform: scale(1.05);
+        }
+        .inventory-item.selected {
+            border-color: #4ECDC4;
+            background: linear-gradient(180deg, #E0F7FA 0%, #B2EBF2 100%);
+        }
+
+        .item-count {
+            background: #F5A623;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            margin: -8px -8px 0 0;
+            float: right;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
 
         /* 便当选择 */
@@ -836,45 +952,7 @@
             border-radius: 50%;
         }
 
-        /* 小O角色 */
-        .xiao-o {
-            position: absolute;
-            bottom: 22%;
-            right: 20%;
-            width: 60px;
-            height: 60px;
-            z-index: 55;
-            opacity: 0.9;
-        }
-        .xiao-o-body {
-            width: 50px;
-            height: 45px;
-            background: linear-gradient(180deg, #FFF 0%, #F5F5F5 100%);
-            border-radius: 50%;
-            position: relative;
-            border: 2px solid #5D3A1A;
-        }
-        .xiao-o-ear {
-            width: 15px;
-            height: 18px;
-            background: #FFF;
-            border-radius: 50% 50% 0 0;
-            position: absolute;
-            top: -10px;
-            border: 2px solid #5D3A1A;
-            border-bottom: none;
-        }
-        .xiao-o-ear.left { left: 5px; transform: rotate(-10deg); }
-        .xiao-o-ear.right { right: 5px; transform: rotate(10deg); }
-        .xiao-o-spot {
-            width: 12px;
-            height: 12px;
-            background: #5D3A1A;
-            border-radius: 50%;
-            position: absolute;
-            top: 8px;
-            right: 8px;
-        }
+        
     </style>
 </head>
 <body>
@@ -887,38 +965,14 @@
 
             <!-- UI -->
             <div id="album-btn">📷</div>
-            <div id="bone-counter">
-                <span class="bone-icon">🦴</span>
-                <span id="bone-num">20</span>
+            <div id="mushroom-counter">
+                <span class="mushroom-icon">🍄</span>
+                <span id="mushroom-num">20</span>
             </div>
 
-            <!-- 场景 -->
-            <div class="ground"></div>
-
-            <!-- 蘑菇屋 -->
-            <div class="mushroom-house">
-                <div class="mushroom-cap"></div>
-                <div class="mushroom-stem">
-                    <div class="door"></div>
-                </div>
-            </div>
-
-            <!-- 骨头摊 -->
-            <div id="bone-stall">
-                <div class="stall-bone">🦴</div>
-                <div class="stall-bone">🦴</div>
-                <div class="stall-table"></div>
-                <div class="stall-leg left"></div>
-                <div class="stall-leg right"></div>
-            </div>
-
-            <!-- 小O -->
-            <div class="xiao-o" id="xiao-o">
-                <div class="xiao-o-body">
-                    <div class="xiao-o-ear left"></div>
-                    <div class="xiao-o-ear right"></div>
-                    <div class="xiao-o-spot"></div>
-                </div>
+            <!-- 蘑菇容器 -->
+            <div class="ground" id="ground">
+                <!-- 蘑菇将通过JavaScript动态生成 -->
             </div>
 
             <!-- 小H -->
@@ -936,11 +990,11 @@
                 </div>
             </div>
 
-            <!-- 状态提示 -->
-            <div id="status-text">小H在家发呆中...</div>
-
             <!-- 出发按钮 -->
-            <button id="go-btn">🎒 出发探险</button>
+            <button id="go-btn">🚀 探险</button>
+            
+            <!-- 商店按钮 -->
+            <button id="shop-btn">🛒 商店</button>
         </div>
 
         <!-- 进度条页面 -->
@@ -1029,6 +1083,46 @@
             </div>
         </div>
 
+        <!-- 商店弹窗 -->
+        <div class="modal-overlay shop-modal" id="shop-modal">
+            <div class="modal-content">
+                <div class="modal-title">🛒 蘑菇商店</div>
+                
+                <div class="shop-tabs">
+                    <div class="shop-tab active" data-tab="food">🍖 食物</div>
+                    <div class="shop-tab" data-tab="prop">🎒 道具</div>
+                </div>
+
+                <div class="shop-items" id="shop-items">
+                    <!-- 商品将通过JavaScript动态生成 -->
+                </div>
+
+                <button class="modal-btn secondary" id="shop-close">关闭</button>
+            </div>
+        </div>
+
+        <!-- 物品栏弹窗 -->
+        <div class="modal-overlay inventory-modal" id="inventory-modal">
+            <div class="modal-content">
+                <div class="modal-title">🎒 物品栏</div>
+                
+                <div class="inventory-empty" id="inventory-empty" style="display:none;">
+                    <div class="empty-icon">📦</div>
+                    <div class="empty-text">哎呀~ 背包空空如也！<br>快去商店采购吧！</div>
+                    <button class="modal-btn primary" id="go-to-shop">🛒 去商店</button>
+                </div>
+
+                <div class="inventory-items" id="inventory-items">
+                    <!-- 物品将通过JavaScript动态生成 -->
+                </div>
+
+                <div style="margin-top: 20px; display: flex; gap: 10px;">
+                    <button class="modal-btn secondary" id="inventory-close">取消</button>
+                    <button class="modal-btn primary" id="confirm-item" disabled>选择出发</button>
+                </div>
+            </div>
+        </div>
+
         <!-- 大图查看器 -->
         <div class="photo-viewer" id="photo-viewer">
             <div class="viewer-image" id="viewer-img">
@@ -1074,25 +1168,51 @@
             '彭小哥："小H你跑得比我还快！"'
         ];
 
+        // ==================== 商店数据 ====================
+        const SHOP_ITEMS = {
+            food: [
+                { id: 'bone', name: '骨头', emoji: '🦴', price: 5, desc: '基础食物，去附近逛逛', level: 1 },
+                { id: 'meat', name: '肉块', emoji: '🍖', price: 15, desc: '美味肉块，跑得更远', level: 2 },
+                { id: 'steak', name: '牛排', emoji: '🥩', price: 30, desc: '高级牛排，探索远方', level: 3 },
+                { id: 'sushi', name: '寿司', emoji: '🍣', price: 50, desc: '精致料理，解锁新区域', level: 4 }
+            ],
+            prop: [
+                { id: 'swim_ring', name: '游泳圈', emoji: '🏊', price: 20, desc: '增加去沿海城市的概率', boostDest: ['river'] },
+                { id: 'compass', name: '指南针', emoji: '🧭', price: 35, desc: '增加去新地方的概率', boostDest: ['field', 'river', 'neighbor', 'market'] },
+                { id: 'ball', name: '玩具球', emoji: '⚽', price: 15, desc: '增加去公园的概率', boostDest: ['field'] },
+                { id: 'camera', name: '相机', emoji: '📷', price: 40, desc: '增加获得明信片概率', boostDest: [] }
+            ]
+        };
+
         // ==================== 游戏状态 ====================
         let gameState = {
-            bones: 20,
+            mushrooms: 20,
             xiaohStatus: 'home', // home / away / return
             currentTrip: null,
             album: [],
-            boneSpawnTimer: null,
             tripTimer: null,
             progressInterval: null,
-            selectedBento: null
+            selectedItem: null,
+            mushroomsOnGround: [],
+            inventory: {
+                bone: 0,
+                meat: 0,
+                steak: 0,
+                sushi: 0,
+                swim_ring: 0,
+                compass: 0,
+                ball: 0,
+                camera: 0
+            }
         };
 
         // ==================== DOM元素 ====================
         const el = {
-            boneNum: document.getElementById('bone-num'),
+            mushroomNum: document.getElementById('mushroom-num'),
             goBtn: document.getElementById('go-btn'),
-            statusText: document.getElementById('status-text'),
+            shopBtn: document.getElementById('shop-btn'),
             xiaoh: document.getElementById('xiaoh-character'),
-            boneStall: document.getElementById('bone-stall'),
+            ground: document.getElementById('ground'),
             goModal: document.getElementById('go-modal'),
             photoModal: document.getElementById('photo-modal'),
             postcardModal: document.getElementById('postcard-modal'),
@@ -1113,12 +1233,24 @@
             collectReward: document.getElementById('collect-reward'),
             sharePostcard: document.getElementById('share-postcard'),
             photoViewer: document.getElementById('photo-viewer'),
-            viewerClose: document.getElementById('viewer-close')
+            viewerClose: document.getElementById('viewer-close'),
+            // 商店相关
+            shopModal: document.getElementById('shop-modal'),
+            shopClose: document.getElementById('shop-close'),
+            shopTabs: document.querySelectorAll('.shop-tab'),
+            shopItems: document.getElementById('shop-items'),
+            // 物品栏相关
+            inventoryModal: document.getElementById('inventory-modal'),
+            inventoryEmpty: document.getElementById('inventory-empty'),
+            inventoryItems: document.getElementById('inventory-items'),
+            inventoryClose: document.getElementById('inventory-close'),
+            confirmItem: document.getElementById('confirm-item'),
+            goToShop: document.getElementById('go-to-shop')
         };
 
         // ==================== 工具函数 ====================
-        function updateBoneDisplay() {
-            el.boneNum.textContent = gameState.bones;
+        function updateMushroomDisplay() {
+            el.mushroomNum.textContent = gameState.mushrooms;
         }
 
         function showFloatText(x, y, text) {
@@ -1139,34 +1271,155 @@
             return arr[Math.floor(Math.random() * arr.length)];
         }
 
-        // ==================== 骨头摊 ====================
-        let boneSpawnInterval;
+        // ==================== 蘑菇生成系统 ====================
+        const MUSHROOM_TYPES = [
+            { name: 'tallShroom_brown', size: 'large' },
+            { name: 'tinyShroom_brown', size: 'small' },
+            { name: 'tallShroom_red', size: 'large' },
+            { name: 'tinyShroom_red', size: 'small' },
+            { name: 'tallShroom_tan', size: 'large' },
+            { name: 'tinyShroom_tan', size: 'small' }
+        ];
 
-        function startBoneSpawning() {
-            boneSpawnInterval = setInterval(() => {
-                // 骨头摊自动刷新动画
-                const bones = el.boneStall.querySelectorAll('.stall-bone');
-                bones.forEach(b => {
-                    b.style.animation = 'none';
-                    setTimeout(() => b.style.animation = '', 10);
-                });
-            }, 30000);
+        let mushroomSpawnInterval;
+        let mushroomIdCounter = 0;
+
+        function spawnMushroom() {
+            if (gameState.xiaohStatus !== 'home') return;
+            if (gameState.mushroomsOnGround.length >= 5) return;
+
+            const mushroomType = randomChoice(MUSHROOM_TYPES);
+            const x = randomInt(30, 380); // ground宽度430，留出边距
+            const y = randomInt(50, 280); // ground高度350，留出底部空间
+
+            const mushroom = {
+                id: mushroomIdCounter++,
+                type: mushroomType.name,
+                size: mushroomType.size,
+                x: x,
+                y: y
+            };
+
+            gameState.mushroomsOnGround.push(mushroom);
+            renderMushroom(mushroom);
         }
 
-        el.boneStall.addEventListener('click', (e) => {
+        function renderMushroom(mushroom) {
+            const mushroomEl = document.createElement('img');
+            mushroomEl.className = `mushroom ${mushroom.size}`;
+            mushroomEl.src = `assets/${mushroom.type}.png`;
+            mushroomEl.style.left = mushroom.x + 'px';
+            mushroomEl.style.bottom = (350 - mushroom.y) + 'px';
+            mushroomEl.dataset.id = mushroom.id;
+
+            mushroomEl.addEventListener('click', () => {
+                collectMushroom(mushroomEl, mushroom);
+            });
+
+            el.ground.appendChild(mushroomEl);
+        }
+
+        function collectMushroom(elMushroom, mushroom) {
             if (gameState.xiaohStatus !== 'home') return;
 
-            gameState.bones += 1;
-            updateBoneDisplay();
+            // 变大动画
+            elMushroom.classList.add('growing');
 
-            const rect = el.boneStall.getBoundingClientRect();
-            const containerRect = document.getElementById('game-container').getBoundingClientRect();
-            showFloatText(
-                rect.left - containerRect.left + rect.width / 2,
-                rect.top - containerRect.top,
-                '+1 🦴'
-            );
-        });
+            setTimeout(() => {
+                // 消失动画
+                elMushroom.classList.remove('growing');
+                elMushroom.classList.add('disappearing');
+
+                setTimeout(() => {
+                    // 移除蘑菇
+                    elMushroom.remove();
+                    gameState.mushroomsOnGround = gameState.mushroomsOnGround.filter(m => m.id !== mushroom.id);
+
+                    // 添加蘑菇币
+                    const reward = mushroom.size === 'large' ? 2 : 1;
+                    gameState.mushrooms += reward;
+                    updateMushroomDisplay();
+
+                    // 显示飘字
+                    const rect = elMushroom.getBoundingClientRect();
+                    const containerRect = document.getElementById('game-container').getBoundingClientRect();
+                    showFloatText(
+                        rect.left - containerRect.left + rect.width / 2,
+                        rect.top - containerRect.top,
+                        `+${reward} 🍄`
+                    );
+                }, 500);
+            }, 500);
+        }
+
+        function startMushroomSpawning() {
+            // 初始生成1-3个蘑菇
+            const initialCount = randomInt(1, 3);
+            for (let i = 0; i < initialCount; i++) {
+                setTimeout(() => spawnMushroom(), i * 500);
+            }
+
+            // 每隔5-10秒随机生成新蘑菇
+            mushroomSpawnInterval = setInterval(() => {
+                spawnMushroom();
+            }, randomInt(5000, 10000));
+        }
+
+        // ==================== 物品栏逻辑 ====================
+        function renderInventory() {
+            el.inventoryItems.innerHTML = '';
+            gameState.selectedItem = null;
+            el.confirmItem.disabled = true;
+
+            let hasItems = false;
+            Object.keys(gameState.inventory).forEach(itemId => {
+                if (gameState.inventory[itemId] > 0) {
+                    hasItems = true;
+                    const item = getItemById(itemId);
+                    if (item) {
+                        const itemEl = document.createElement('div');
+                        itemEl.className = 'inventory-item';
+                        itemEl.dataset.itemId = itemId;
+                        itemEl.innerHTML = `
+                            <div class="item-icon">${item.emoji}</div>
+                            <div class="item-name">${item.name}</div>
+                            <div class="item-count">${gameState.inventory[itemId]}</div>
+                        `;
+                        itemEl.addEventListener('click', () => {
+                            selectInventoryItem(itemId);
+                        });
+                        el.inventoryItems.appendChild(itemEl);
+                    }
+                }
+            });
+
+            if (hasItems) {
+                el.inventoryEmpty.style.display = 'none';
+                el.inventoryItems.style.display = 'grid';
+            } else {
+                el.inventoryEmpty.style.display = 'block';
+                el.inventoryItems.style.display = 'none';
+            }
+        }
+
+        function getItemById(itemId) {
+            for (const category of ['food', 'prop']) {
+                const item = SHOP_ITEMS[category].find(i => i.id === itemId);
+                if (item) return item;
+            }
+            return null;
+        }
+
+        function selectInventoryItem(itemId) {
+            document.querySelectorAll('.inventory-item').forEach(el => el.classList.remove('selected'));
+            const selectedEl = document.querySelector(`.inventory-item[data-item-id="${itemId}"]`);
+            if (selectedEl) {
+                selectedEl.classList.add('selected');
+            }
+            gameState.selectedItem = itemId;
+            el.confirmItem.disabled = false;
+            el.confirmItem.textContent = `使用 ${getItemById(itemId)?.name} 出发`;
+        }
 
         // ==================== 出发逻辑 ====================
         el.goBtn.addEventListener('click', () => {
@@ -1179,27 +1432,152 @@
                 return;
             }
 
-            // 重置选择
-            gameState.selectedBento = null;
-            el.bentoCards.forEach(card => card.classList.remove('selected', 'disabled'));
-            el.confirmGo.disabled = true;
-
-            // 检查骨头是否足够
-            el.bentoCards.forEach(card => {
-                const cost = parseInt(card.dataset.cost);
-                if (gameState.bones < cost) {
-                    card.classList.add('disabled');
-                }
-            });
-
-            el.goModal.classList.add('active');
+            renderInventory();
+            el.inventoryModal.classList.add('active');
         });
 
-        // 便当选择
+        // 物品栏关闭
+        el.inventoryClose.addEventListener('click', () => {
+            el.inventoryModal.classList.remove('active');
+        });
+
+        // 从物品栏去商店
+        el.goToShop.addEventListener('click', () => {
+            el.inventoryModal.classList.remove('active');
+            renderShop('food');
+            el.shopModal.classList.add('active');
+        });
+
+        // 确认选择物品出发
+        el.confirmItem.addEventListener('click', () => {
+            if (!gameState.selectedItem) return;
+
+            const selectedItem = getItemById(gameState.selectedItem);
+            if (!selectedItem) return;
+
+            // 消耗物品
+            gameState.inventory[gameState.selectedItem]--;
+            
+            // 根据食物等级和道具确定目的地
+            const destination = selectDestination(selectedItem);
+            
+            // 关闭物品栏
+            el.inventoryModal.classList.remove('active');
+
+            // 开始探险
+            startTrip(selectedItem, destination);
+        });
+
+        // ==================== 商店逻辑 ====================
+        function renderShop(tab) {
+            el.shopTabs.forEach(t => t.classList.remove('active'));
+            document.querySelector(`.shop-tab[data-tab="${tab}"]`).classList.add('active');
+
+            el.shopItems.innerHTML = '';
+            SHOP_ITEMS[tab].forEach(item => {
+                const itemEl = document.createElement('div');
+                itemEl.className = `shop-item ${gameState.mushrooms < item.price ? 'disabled' : ''}`;
+                itemEl.innerHTML = `
+                    <div class="item-icon">${item.emoji}</div>
+                    <div class="item-name">${item.name}</div>
+                    <div class="item-desc">${item.desc}</div>
+                    <div class="item-price">🍄 ${item.price}</div>
+                    <button class="buy-btn" ${gameState.mushrooms < item.price ? 'disabled' : ''} data-item-id="${item.id}">购买</button>
+                `;
+                el.shopItems.appendChild(itemEl);
+            });
+
+            // 添加购买事件
+            document.querySelectorAll('.buy-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const itemId = e.target.dataset.itemId;
+                    buyItem(itemId);
+                });
+            });
+        }
+
+        function buyItem(itemId) {
+            const item = getItemById(itemId);
+            if (!item || gameState.mushrooms < item.price) return;
+
+            gameState.mushrooms -= item.price;
+            gameState.inventory[itemId]++;
+            updateMushroomDisplay();
+            saveGame();
+
+            showFloatText(window.innerWidth / 2, window.innerHeight * 0.5, `购买成功！${item.emoji}`);
+            
+            // 重新渲染商店（价格检查）
+            const activeTab = document.querySelector('.shop-tab.active').dataset.tab;
+            renderShop(activeTab);
+        }
+
+        // 商店按钮
+        el.shopBtn.addEventListener('click', () => {
+            renderShop('food');
+            el.shopModal.classList.add('active');
+        });
+
+        // 商店关闭
+        el.shopClose.addEventListener('click', () => {
+            el.shopModal.classList.remove('active');
+        });
+
+        // 商店标签切换
+        el.shopTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                renderShop(tab.dataset.tab);
+            });
+        });
+
+        // ==================== 目的地选择逻辑 ====================
+        function selectDestination(item) {
+            const destinations = Object.keys(DESTINATIONS);
+            let weights = destinations.map(() => 1);
+
+            // 根据食物等级调整权重
+            if (item.level) {
+                destinations.forEach((dest, index) => {
+                    const destLevel = getDestinationLevel(dest);
+                    if (destLevel <= item.level) {
+                        weights[index] = item.level - destLevel + 1;
+                    } else {
+                        weights[index] = 0.5;
+                    }
+                });
+            }
+
+            // 根据道具增加特定目的地概率
+            if (item.boostDest && item.boostDest.length > 0) {
+                destinations.forEach((dest, index) => {
+                    if (item.boostDest.includes(dest)) {
+                        weights[index] *= 2;
+                    }
+                });
+            }
+
+            // 随机选择
+            const totalWeight = weights.reduce((a, b) => a + b, 0);
+            let random = Math.random() * totalWeight;
+            for (let i = 0; i < destinations.length; i++) {
+                random -= weights[i];
+                if (random <= 0) {
+                    return DESTINATIONS[destinations[i]];
+                }
+            }
+            return DESTINATIONS.field;
+        }
+
+        function getDestinationLevel(destId) {
+            const levels = { field: 1, river: 2, neighbor: 2, market: 3 };
+            return levels[destId] || 1;
+        }
+
+        // ==================== 旧便当选择逻辑（保留但不使用） ====================
         el.bentoCards.forEach(card => {
             card.addEventListener('click', () => {
                 if (card.classList.contains('disabled')) {
-                    showFloatText(window.innerWidth / 2, window.innerHeight * 0.5, '骨头不够哦！');
+                    showFloatText(window.innerWidth / 2, window.innerHeight * 0.5, '蘑菇不够哦！');
                     return;
                 }
 
@@ -1220,15 +1598,15 @@
             el.goModal.classList.remove('active');
         });
 
-        // 确认出发
+        // 确认出发（旧便当系统）
         el.confirmGo.addEventListener('click', () => {
             if (!gameState.selectedBento) return;
 
             const bento = gameState.selectedBento;
 
-            // 扣除骨头
-            gameState.bones -= bento.cost;
-            updateBoneDisplay();
+            // 扣除蘑菇
+            gameState.mushrooms -= bento.cost;
+            updateMushroomDisplay();
 
             // 选择目的地
             const destKeys = Object.keys(DESTINATIONS);
@@ -1239,12 +1617,34 @@
             const [minReward, maxReward] = bento.reward.split('-').map(Number);
             const reward = randomInt(minReward, maxReward);
 
+            startTrip(bento, destination, reward, destKey);
+        });
+
+        // ==================== 开始行程 ====================
+        function startTrip(item, destination, reward = null, destKey = null) {
+            // 如果没有提供目的地key，从目的地对象获取
+            if (!destKey) {
+                destKey = Object.keys(DESTINATIONS).find(k => DESTINATIONS[k] === destination);
+            }
+
+            // 如果没有提供奖励，根据物品等级计算
+            if (reward === null) {
+                const baseReward = item.level ? item.level * 5 : 5;
+                reward = randomInt(baseReward, baseReward + 10);
+            }
+
             // 选择明信片
-            const postcards = POSTCARDS[destKey];
+            const postcards = POSTCARDS[destKey] || POSTCARDS.field;
             const postcard = randomChoice(postcards);
 
             // 选择嘉宾评论
             const guestComment = randomChoice(GUEST_COMMENTS);
+
+            // 计算时间（根据食物等级）
+            let tripTime = 15; // 默认15秒
+            if (item.level) {
+                tripTime = 10 + item.level * 5; // 等级越高时间越长
+            }
 
             // 保存行程
             gameState.currentTrip = {
@@ -1252,7 +1652,7 @@
                 destName: destination.name,
                 destEmoji: destination.emoji,
                 destBg: destination.bg,
-                time: bento.time,
+                time: tripTime,
                 reward: reward,
                 postcard: postcard,
                 guestComment: guestComment,
@@ -1264,12 +1664,12 @@
             gameState.xiaohStatus = 'away';
             el.goBtn.disabled = true;
             el.goBtn.textContent = '🚶 已出门';
-            el.statusText.textContent = '小H去' + destination.name + '探险了...';
 
             // 小H出门动画
             el.xiaoh.classList.remove('xiaoh-idle');
             el.xiaoh.classList.add('xiaoh-away');
 
+            // 关闭弹窗
             el.goModal.classList.remove('active');
 
             // 切换到进度页面
@@ -1278,7 +1678,7 @@
                 el.progressPage.style.display = 'flex';
                 startProgress();
             }, 1000);
-        });
+        }
 
         // ==================== 进度条逻辑 ====================
         function startProgress() {
@@ -1348,9 +1748,9 @@
         el.collectReward.addEventListener('click', () => {
             const trip = gameState.currentTrip;
 
-            // 加骨头
-            gameState.bones += trip.reward;
-            updateBoneDisplay();
+            // 加蘑菇
+            gameState.mushrooms += trip.reward;
+            updateMushroomDisplay();
 
             // 添加到相册
             const albumItem = {
@@ -1375,18 +1775,17 @@
             el.xiaoh.classList.add('xiaoh-idle');
             el.goBtn.disabled = false;
             el.goBtn.textContent = '🎒 出发探险';
-            el.statusText.textContent = '小H在家发呆中...';
 
             gameState.xiaohStatus = 'home';
             gameState.currentTrip = null;
 
-            showFloatText(window.innerWidth / 2, window.innerHeight * 0.5, '欢迎回家！🦴 +' + trip.reward);
+            showFloatText(window.innerWidth / 2, window.innerHeight * 0.5, '欢迎回家！🍄 +' + trip.reward);
         });
 
         // 分享
         el.sharePostcard.addEventListener('click', () => {
             const trip = gameState.currentTrip;
-            const shareText = `【小H去哪儿】小H从${trip.destName}寄来明信片："${trip.postcard.text}" 🐕🦴`;
+            const shareText = `【小H去哪儿】小H从${trip.destName}寄来明信片："${trip.postcard.text}" 🐕🍄`;
 
             if (navigator.share) {
                 navigator.share({
@@ -1470,8 +1869,9 @@
         // ==================== 存档系统 ====================
         function saveGame() {
             localStorage.setItem('xiaoh_game', JSON.stringify({
-                bones: gameState.bones,
-                album: gameState.album
+                mushrooms: gameState.mushrooms,
+                album: gameState.album,
+                inventory: gameState.inventory
             }));
         }
 
@@ -1479,15 +1879,43 @@
             const saved = localStorage.getItem('xiaoh_game');
             if (saved) {
                 const data = JSON.parse(saved);
-                gameState.bones = data.bones || 20;
+                gameState.mushrooms = data.mushrooms || data.bones || 20;
                 gameState.album = data.album || [];
-                updateBoneDisplay();
+                gameState.inventory = data.inventory || {
+                    bone: 0,
+                    meat: 0,
+                    steak: 0,
+                    sushi: 0,
+                    swim_ring: 0,
+                    compass: 0,
+                    ball: 0,
+                    camera: 0
+                };
+                updateMushroomDisplay();
+            }
+        }
+
+        // ==================== 背景时间切换 ====================
+        function setBackgroundByTime() {
+            const hour = new Date().getHours();
+            const homePage = document.getElementById('home-page');
+            
+            homePage.classList.remove('day', 'night');
+            
+            if (hour >= 6 && hour < 18) {
+                homePage.classList.add('day');
+            } else {
+                homePage.classList.add('night');
             }
         }
 
         // ==================== 初始化 ====================
         loadGame();
-        startBoneSpawning();
+        startMushroomSpawning();
+        setBackgroundByTime();
+        
+        // 每分钟检查一次时间，自动切换背景
+        setInterval(setBackgroundByTime, 60000);
 
         // 防止页面滚动
         document.addEventListener('touchmove', (e) => {
