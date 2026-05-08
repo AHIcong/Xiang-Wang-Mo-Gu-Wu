@@ -40,11 +40,11 @@
         }
 
         #home-page.day {
-            background-image: url('assets/garden-day.png');
+            background-image: url('assets/背景/garden-day.png');
         }
 
         #home-page.night {
-            background-image: url('assets/garden-night.png');
+            background-image: url('assets/背景/garden-night.png');
         }
 
         /* 天空和云朵 */
@@ -321,6 +321,32 @@
             50% { transform: translateX(-50%) scale(1.02); }
         }
 
+        /* 屋子内小H */
+        #xiaoh-character-room {
+            position: absolute;
+            bottom: 22%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: auto;
+            height: auto;
+            z-index: 60;
+            transition: all 0.5s ease;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        /* 睡觉状态样式 - 移动到床上 */
+        .xiaoh-sleeping {
+            bottom: 67% !important;
+            left: 30% !important;
+            transform: translateX(-50%) !important;
+        }
+
+        .xiaoh-sleeping .xiaoh-sprite-img {
+            transform: scale(0.9);
+        }
+
         .xiaoh-away {
             opacity: 0;
             transform: translateX(-50%) translateX(200px) !important;
@@ -363,10 +389,10 @@
             z-index: 50;
         }
         #room-page.day {
-            background-image: url('assets/room-day.png');
+            background-image: url('assets/背景/room-day.png');
         }
         #room-page.night {
-            background-image: url('assets/room-night.png');
+            background-image: url('assets/背景/room-night.png');
         }
         #room-page.active {
             display: block;
@@ -1180,6 +1206,11 @@
                 <span id="room-mushroom-num">20</span>
             </div>
             
+            <!-- 小H（屋子内） -->
+            <div id="xiaoh-character-room" class="xiaoh-idle">
+                <img class="xiaoh-sprite-img" id="xiaoh-sprite-img-room" src="assets/待机/001.png" alt="" draggable="false" />
+            </div>
+            
             <!-- 探险按钮 -->
             <button id="room-go-btn">🚀 探险</button>
             
@@ -1516,6 +1547,8 @@
             shopBtn: document.getElementById('shop-btn'),
             xiaoh: document.getElementById('xiaoh-character'),
             xiaohSpriteImg: document.getElementById('xiaoh-sprite-img'),
+            xiaohCharacterRoom: document.getElementById('xiaoh-character-room'),
+            xiaohSpriteImgRoom: document.getElementById('xiaoh-sprite-img-room'),
             ground: document.getElementById('ground'),
             goModal: document.getElementById('go-modal'),
             photoModal: document.getElementById('photo-modal'),
@@ -1603,6 +1636,151 @@
             }
         }
 
+        // ==================== 小H睡觉状态 ====================
+        // 趴下睡觉序列帧（assets/趴下睡觉/001.png … 017.png）
+        const XIAOH_LAYDOWN_FRAMES = 17;
+        const XIAOH_LAYDOWN_MS = 150;
+        let xiaohLaydownTimer = null;
+        let xiaohLaydownFrame = 0;
+
+        function xiaohLaydownFrameSrc(index) {
+            const n = String(index + 1).padStart(3, '0');
+            return 'assets/趴下睡觉/' + n + '.png';
+        }
+
+        // 睡觉待机序列帧（assets/睡觉待机/001.png … 010.png）- 往返循环
+        const XIAOH_SLEEP_IDLE_FRAMES = 10;
+        const XIAOH_SLEEP_IDLE_MS = 200;
+        let xiaohSleepIdleTimer = null;
+        let xiaohSleepIdleFrame = 0;
+        let xiaohSleepDirection = 1; // 1: 正向, -1: 反向
+
+        function xiaohSleepIdleFrameSrc(index) {
+            const n = String(index + 1).padStart(3, '0');
+            return 'assets/睡觉待机/' + n + '.png';
+        }
+
+        function startXiaohSleepIdleAnim() {
+            if (xiaohSleepIdleTimer) return;
+            xiaohSleepIdleTimer = setInterval(() => {
+                xiaohSleepIdleFrame += xiaohSleepDirection;
+                // 到达边界时反向
+                if (xiaohSleepIdleFrame >= XIAOH_SLEEP_IDLE_FRAMES - 1) {
+                    xiaohSleepDirection = -1;
+                } else if (xiaohSleepIdleFrame <= 0) {
+                    xiaohSleepDirection = 1;
+                }
+                // 更新两个界面的小H
+                if (el.xiaohSpriteImg) {
+                    el.xiaohSpriteImg.src = xiaohSleepIdleFrameSrc(xiaohSleepIdleFrame);
+                }
+                if (el.xiaohSpriteImgRoom) {
+                    el.xiaohSpriteImgRoom.src = xiaohSleepIdleFrameSrc(xiaohSleepIdleFrame);
+                }
+            }, XIAOH_SLEEP_IDLE_MS);
+        }
+
+        function stopXiaohSleepIdleAnim() {
+            if (xiaohSleepIdleTimer) {
+                clearInterval(xiaohSleepIdleTimer);
+                xiaohSleepIdleTimer = null;
+            }
+        }
+
+        // 当前小H状态
+        let currentXiaohState = 'idle'; // idle, laydown, sleep_idle
+
+        // 开始趴下睡觉动画
+        function startXiaohLaydownAnim(callback) {
+            if (xiaohLaydownTimer || currentXiaohState === 'sleep_idle') return;
+            
+            stopXiaohIdleAnim();
+            stopXiaohSleepIdleAnim();
+            
+            currentXiaohState = 'laydown';
+            xiaohLaydownFrame = 0;
+            
+            // 更新两个界面的小H样式
+            if (el.xiaoh) {
+                el.xiaoh.classList.add('xiaoh-sleeping');
+            }
+            if (el.xiaohCharacterRoom) {
+                el.xiaohCharacterRoom.classList.add('xiaoh-sleeping');
+            }
+            
+            xiaohLaydownTimer = setInterval(() => {
+                const imgSrc = xiaohLaydownFrameSrc(xiaohLaydownFrame);
+                if (el.xiaohSpriteImg) {
+                    el.xiaohSpriteImg.src = imgSrc;
+                }
+                if (el.xiaohSpriteImgRoom) {
+                    el.xiaohSpriteImgRoom.src = imgSrc;
+                }
+                
+                xiaohLaydownFrame++;
+                
+                // 趴下动画完成，进入睡觉待机
+                if (xiaohLaydownFrame >= XIAOH_LAYDOWN_FRAMES) {
+                    stopXiaohLaydownAnim();
+                    currentXiaohState = 'sleep_idle';
+                    xiaohSleepIdleFrame = 0;
+                    xiaohSleepDirection = 1;
+                    startXiaohSleepIdleAnim();
+                    if (callback) callback();
+                }
+            }, XIAOH_LAYDOWN_MS);
+        }
+
+        function stopXiaohLaydownAnim() {
+            if (xiaohLaydownTimer) {
+                clearInterval(xiaohLaydownTimer);
+                xiaohLaydownTimer = null;
+            }
+        }
+
+        // 唤醒小H
+        function wakeUpXiaoh() {
+            stopXiaohLaydownAnim();
+            stopXiaohSleepIdleAnim();
+            
+            // 移除睡觉样式
+            if (el.xiaoh) {
+                el.xiaoh.classList.remove('xiaoh-sleeping');
+            }
+            if (el.xiaohCharacterRoom) {
+                el.xiaohCharacterRoom.classList.remove('xiaoh-sleeping');
+            }
+            
+            currentXiaohState = 'idle';
+            xiaohIdleFrame = 0;
+            if (el.xiaohSpriteImg) {
+                el.xiaohSpriteImg.src = xiaohIdleFrameSrc(0);
+            }
+            if (el.xiaohSpriteImgRoom) {
+                el.xiaohSpriteImgRoom.src = xiaohIdleFrameSrc(0);
+            }
+            startXiaohIdleAnim();
+        }
+
+        // 检查是否应该睡觉（夜晚房间）
+        function checkSleepCondition() {
+            const roomPage = document.getElementById('room-page');
+            const isInRoom = roomPage && roomPage.classList.contains('active');
+            const isNight = roomPage && roomPage.classList.contains('night');
+            
+            if (isInRoom && isNight && gameState.xiaohStatus === 'home') {
+                // 夜晚在房间里，且小H在家，触发睡觉
+                if (currentXiaohState !== 'sleep_idle' && currentXiaohState !== 'laydown') {
+                    startXiaohLaydownAnim();
+                }
+            } else {
+                // 不在夜晚房间，唤醒小H
+                if (currentXiaohState === 'sleep_idle' || currentXiaohState === 'laydown') {
+                    wakeUpXiaoh();
+                }
+            }
+        }
+
         // ==================== 蘑菇生成系统 ====================
         const MUSHROOM_TYPES = [
             { name: 'tallShroom_brown', size: 'large' },
@@ -1639,7 +1817,11 @@
         function renderMushroom(mushroom) {
             const mushroomEl = document.createElement('img');
             mushroomEl.className = `mushroom ${mushroom.size}`;
-            mushroomEl.src = `assets/${mushroom.type}.png`;
+            let imgPath = `assets/${mushroom.type}.png`;
+            if (mushroom.type.includes('Shroom')) {
+                imgPath = `assets/蘑菇/${mushroom.type}.png`;
+            }
+            mushroomEl.src = imgPath;
             mushroomEl.style.left = mushroom.x + 'px';
             mushroomEl.style.bottom = (350 - mushroom.y) + 'px';
             mushroomEl.dataset.id = mushroom.id;
@@ -1864,6 +2046,10 @@
             } else {
                 el.roomPage.classList.add('night');
             }
+            // 如果在屋子内，检查睡觉条件
+            if (el.roomPage.classList.contains('active')) {
+                checkSleepCondition();
+            }
         }
 
         // 进入小屋
@@ -1873,6 +2059,8 @@
             el.roomPage.classList.add('active');
             el.roomPage.style.display = 'block';
             el.homePage.style.display = 'none';
+            // 检查是否需要睡觉
+            setTimeout(checkSleepCondition, 100);
         });
 
         // 返回庭院
@@ -1880,6 +2068,8 @@
             el.roomPage.classList.remove('active');
             el.roomPage.style.display = 'none';
             el.homePage.style.display = 'block';
+            // 返回庭院时唤醒小H
+            checkSleepCondition();
         });
 
         // 屋子探险按钮
@@ -2390,7 +2580,8 @@
         startMushroomSpawning();
         setBackgroundByTime();
         initBGM();
-        
+        startXiaohIdleAnim();
+
         // 每分钟检查一次时间，自动切换背景
         setInterval(setBackgroundByTime, 60000);
 
