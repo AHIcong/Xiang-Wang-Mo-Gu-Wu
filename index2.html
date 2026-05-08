@@ -99,6 +99,124 @@
             color: #8B691E;
         }
 
+        /* 设置按钮 */
+        #settings-btn {
+            position: absolute;
+            top: 130px;
+            left: 20px;
+            padding: 8px 14px;
+            background: rgba(255,255,255,0.9);
+            border-radius: 20px;
+            border: none;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            z-index: 100;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #5D3A1A;
+        }
+        #settings-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        /* 设置弹窗 */
+        .settings-modal {
+            display: none;
+        }
+        .settings-modal.active {
+            display: flex;
+        }
+        .settings-content {
+            background: linear-gradient(135deg, #FFF8E7 0%, #FFE4C4 100%);
+            border-radius: 20px;
+            padding: 25px;
+            width: 320px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .settings-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 25px;
+            color: #5D3A1A;
+        }
+        .settings-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            background: rgba(255,255,255,0.8);
+            border-radius: 12px;
+            margin-bottom: 12px;
+        }
+        .settings-label {
+            font-size: 16px;
+            font-weight: bold;
+            color: #5D3A1A;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .settings-toggle {
+            width: 50px;
+            height: 28px;
+            background: #ddd;
+            border-radius: 14px;
+            cursor: pointer;
+            position: relative;
+            transition: background 0.3s;
+        }
+        .settings-toggle.active {
+            background: #8BC34A;
+        }
+        .settings-toggle::after {
+            content: '';
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s;
+        }
+        .settings-toggle.active::after {
+            transform: translateX(22px);
+        }
+
+        /* 昼夜切换按钮 */
+        #day-night-toggle {
+            position: absolute;
+            top: 75px;
+            left: 20px;
+            padding: 8px 14px;
+            background: rgba(255,255,255,0.9);
+            border-radius: 20px;
+            border: none;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            z-index: 100;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #5D3A1A;
+        }
+        #day-night-toggle:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        #day-night-toggle:active {
+            transform: scale(0.98);
+        }
+
         /* 相册入口 */
         #album-btn {
             position: absolute;
@@ -301,6 +419,158 @@
             transform: translateX(-50%) translateX(200px) !important;
             transition: all 1s ease;
         }
+
+        /* 小屋按钮 */
+        #room-btn {
+            position: absolute;
+            bottom: 15%;
+            right: 20px;
+            transform: none;
+            width: 100px;
+            height: 45px;
+            background: linear-gradient(180deg, #96CEB4 0%, #88D8B0 100%);
+            border: none;
+            border-radius: 20px;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(150, 206, 180, 0.4);
+            z-index: 100;
+        }
+        #room-btn:hover {
+            transform: scale(1.02);
+        }
+        #room-btn:active { transform: scale(0.95); }
+
+        /* 屋子界面 */
+        #room-page {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            z-index: 50;
+        }
+        #room-page.day {
+            background-image: url('assets/room-day.png');
+        }
+        #room-page.night {
+            background-image: url('assets/room-night.png');
+        }
+        #room-page.active {
+            display: block;
+        }
+
+        /* 屋子界面蘑菇币显示（与庭院一致）*/
+        #room-mushroom-counter {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.9);
+            border-radius: 25px;
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+        #room-mushroom-num {
+            font-size: 20px;
+            font-weight: bold;
+            color: #8B691E;
+        }
+        #room-album-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 44px;
+            height: 44px;
+            background: rgba(255,255,255,0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            cursor: pointer;
+            z-index: 100;
+            transition: transform 0.2s;
+        }
+        #room-album-btn:active { transform: scale(0.9); }
+        
+        /* 屋子探险按钮 */
+        #room-go-btn {
+            position: absolute;
+            bottom: 8%;
+            left: 20px;
+            transform: none;
+            width: 100px;
+            height: 45px;
+            background: linear-gradient(180deg, #FF6B6B 0%, #EE5A5A 100%);
+            border: none;
+            border-radius: 20px;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+            z-index: 100;
+        }
+        #room-go-btn:hover {
+            transform: scale(1.02);
+        }
+        #room-go-btn:active { transform: scale(0.95); }
+        
+        /* 屋子商店按钮 */
+        #room-shop-btn {
+            position: absolute;
+            bottom: 8%;
+            right: 20px;
+            transform: none;
+            width: 100px;
+            height: 45px;
+            background: linear-gradient(180deg, #4ECDC4 0%, #44A3A0 100%);
+            border: none;
+            border-radius: 20px;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(78, 205, 196, 0.4);
+            z-index: 100;
+        }
+        #room-shop-btn:hover {
+            transform: scale(1.02);
+        }
+        #room-shop-btn:active { transform: scale(0.95); }
+        
+        /* 屋子庭院按钮 */
+        #room-courtyard-btn {
+            position: absolute;
+            bottom: 15%;
+            right: 20px;
+            transform: none;
+            width: 100px;
+            height: 45px;
+            background: linear-gradient(180deg, #FFEAA7 0%, #FDCB6E 100%);
+            border: none;
+            border-radius: 20px;
+            color: #5D3A1A;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(253, 203, 110, 0.4);
+            z-index: 100;
+        }
+        #room-courtyard-btn:hover {
+            transform: scale(1.02);
+        }
+        #room-courtyard-btn:active { transform: scale(0.95); }
 
         /* 出发按钮 */
         #go-btn {
@@ -964,7 +1234,9 @@
             <div class="cloud cloud2"></div>
 
             <!-- UI -->
-            <div id="album-btn">📷</div>
+            <button id="day-night-toggle">☀️ 切换夜晚</button>
+            <button id="settings-btn">⚙️ 设置</button>
+            <div id="album-btn">🖼️</div>
             <div id="mushroom-counter">
                 <span class="mushroom-icon">🍄</span>
                 <span id="mushroom-num">20</span>
@@ -993,8 +1265,32 @@
             <!-- 出发按钮 -->
             <button id="go-btn">🚀 探险</button>
             
+            <!-- 小屋按钮 -->
+            <button id="room-btn">🏠 小屋</button>
+            
             <!-- 商店按钮 -->
             <button id="shop-btn">🛒 商店</button>
+        </div>
+
+        <!-- 屋子界面 -->
+        <div id="room-page">
+            <!-- 相册按钮 -->
+            <div id="room-album-btn">🖼️</div>
+            
+            <!-- 蘑菇币数量 -->
+            <div id="room-mushroom-counter">
+                <span class="mushroom-icon">🍄</span>
+                <span id="room-mushroom-num">20</span>
+            </div>
+            
+            <!-- 探险按钮 -->
+            <button id="room-go-btn">🚀 探险</button>
+            
+            <!-- 返回庭院按钮 -->
+            <button id="room-courtyard-btn">🌳 庭院</button>
+            
+            <!-- 商店按钮 -->
+            <button id="room-shop-btn">🛒 商店</button>
         </div>
 
         <!-- 进度条页面 -->
@@ -1012,7 +1308,7 @@
         <div id="album-page">
             <div class="album-header">
                 <div class="album-back" id="album-back">←</div>
-                <div class="album-title">📷 明信片相册</div>
+                <div class="album-title">明信片相册</div>
                 <div class="album-count" id="album-count">已收集 0 张</div>
             </div>
             <div class="album-grid" id="album-grid">
@@ -1083,6 +1379,25 @@
             </div>
         </div>
 
+        <!-- 设置弹窗 -->
+        <div class="modal-overlay settings-modal" id="settings-modal">
+            <div class="settings-content">
+                <div class="settings-title">⚙️ 设置</div>
+                
+                <div class="settings-item">
+                    <span class="settings-label">🎵 背景音乐</span>
+                    <div class="settings-toggle active" id="bgm-toggle"></div>
+                </div>
+                
+                <div class="settings-item">
+                    <span class="settings-label">🔊 音效</span>
+                    <div class="settings-toggle active" id="sound-toggle"></div>
+                </div>
+
+                <button class="modal-btn secondary" id="settings-close" style="margin-top: 20px;">关闭</button>
+            </div>
+        </div>
+
         <!-- 商店弹窗 -->
         <div class="modal-overlay shop-modal" id="shop-modal">
             <div class="modal-content">
@@ -1097,7 +1412,10 @@
                     <!-- 商品将通过JavaScript动态生成 -->
                 </div>
 
-                <button class="modal-btn secondary" id="shop-close">关闭</button>
+                <div style="margin-top: 20px; display: flex; gap: 10px;">
+                    <button class="modal-btn secondary" id="shop-close">关闭</button>
+                    <button class="modal-btn primary" id="shop-back" style="display:none;">返回物品栏</button>
+                </div>
             </div>
         </div>
 
@@ -1206,9 +1524,97 @@
             }
         };
 
+        // ==================== 音效系统 ====================
+        let bgmAudio = null;
+        let bgmEnabled = true;
+        let soundEnabled = true;
+        
+        function initBGM() {
+            bgmAudio = new Audio('assets/background-music.mp3');
+            bgmAudio.volume = 0.3;
+            bgmAudio.loop = true;
+            
+            // 尝试自动播放（需要用户交互后）
+            document.addEventListener('click', () => {
+                if (bgmEnabled && bgmAudio && bgmAudio.paused) {
+                    bgmAudio.play().catch(err => {
+                        console.log('BGM play failed:', err);
+                    });
+                }
+            }, { once: true });
+        }
+        
+        function toggleBGMSetting() {
+            if (!bgmAudio) return;
+            
+            if (bgmEnabled) {
+                bgmAudio.pause();
+                bgmEnabled = false;
+            } else {
+                bgmAudio.play().catch(err => {
+                    console.log('BGM play failed:', err);
+                });
+                bgmEnabled = true;
+            }
+        }
+        
+        function playPickSound() {
+            if (!soundEnabled) return;
+            
+            try {
+                const audio = new Audio('assets/pick-mushroom.mp3');
+                audio.volume = 0.5;
+                audio.play().catch(err => {
+                    console.log('Audio play failed:', err);
+                    generateSimpleSound();
+                });
+            } catch (e) {
+                console.log('Audio not supported:', e);
+                generateSimpleSound();
+            }
+        }
+        
+        function generateSimpleSound() {
+            if (!soundEnabled) return;
+            
+            try {
+                let audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(800, audioContext.currentTime + 0.1);
+                
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.15);
+            } catch (e) {
+                console.log('Sound generation failed:', e);
+            }
+        }
+
         // ==================== DOM元素 ====================
         const el = {
             mushroomNum: document.getElementById('mushroom-num'),
+            roomBtn: document.getElementById('room-btn'),
+            roomPage: document.getElementById('room-page'),
+            roomAlbumBtn: document.getElementById('room-album-btn'),
+            roomMushroomNum: document.getElementById('room-mushroom-num'),
+            roomGoBtn: document.getElementById('room-go-btn'),
+            roomCourtyardBtn: document.getElementById('room-courtyard-btn'),
+            roomShopBtn: document.getElementById('room-shop-btn'),
+            homePage: document.getElementById('home-page'),
+            dayNightToggle: document.getElementById('day-night-toggle'),
+            settingsBtn: document.getElementById('settings-btn'),
+            settingsModal: document.getElementById('settings-modal'),
+            settingsClose: document.getElementById('settings-close'),
+            bgmToggle: document.getElementById('bgm-toggle'),
+            soundToggle: document.getElementById('sound-toggle'),
             goBtn: document.getElementById('go-btn'),
             shopBtn: document.getElementById('shop-btn'),
             xiaoh: document.getElementById('xiaoh-character'),
@@ -1237,6 +1643,7 @@
             // 商店相关
             shopModal: document.getElementById('shop-modal'),
             shopClose: document.getElementById('shop-close'),
+            shopBack: document.getElementById('shop-back'),
             shopTabs: document.querySelectorAll('.shop-tab'),
             shopItems: document.getElementById('shop-items'),
             // 物品栏相关
@@ -1251,6 +1658,7 @@
         // ==================== 工具函数 ====================
         function updateMushroomDisplay() {
             el.mushroomNum.textContent = gameState.mushrooms;
+            el.roomMushroomNum.textContent = gameState.mushrooms;
         }
 
         function showFloatText(x, y, text) {
@@ -1321,6 +1729,9 @@
 
         function collectMushroom(elMushroom, mushroom) {
             if (gameState.xiaohStatus !== 'home') return;
+
+            // 播放采蘑菇音效
+            playPickSound();
 
             // 变大动画
             elMushroom.classList.add('growing');
@@ -1446,6 +1857,9 @@
             el.inventoryModal.classList.remove('active');
             renderShop('food');
             el.shopModal.classList.add('active');
+            // 显示返回物品栏按钮，隐藏关闭按钮
+            el.shopBack.style.display = 'block';
+            el.shopClose.style.display = 'none';
         });
 
         // 确认选择物品出发
@@ -1512,15 +1926,97 @@
             renderShop(activeTab);
         }
 
-        // 商店按钮
+        // 更新屋子蘑菇币显示
+        function updateRoomMushroomDisplay() {
+            el.roomMushroomNum.textContent = gameState.mushrooms;
+        }
+
+        // 更新屋子背景
+        function updateRoomBackground() {
+            const homePage = document.getElementById('home-page');
+            el.roomPage.classList.remove('day', 'night');
+            if (homePage.classList.contains('day')) {
+                el.roomPage.classList.add('day');
+            } else {
+                el.roomPage.classList.add('night');
+            }
+        }
+
+        // 进入小屋
+        el.roomBtn.addEventListener('click', () => {
+            updateRoomBackground();
+            updateRoomMushroomDisplay();
+            el.roomPage.classList.add('active');
+            el.roomPage.style.display = 'block';
+            el.homePage.style.display = 'none';
+        });
+
+        // 返回庭院
+        el.roomCourtyardBtn.addEventListener('click', () => {
+            el.roomPage.classList.remove('active');
+            el.roomPage.style.display = 'none';
+            el.homePage.style.display = 'block';
+        });
+
+        // 屋子探险按钮
+        el.roomGoBtn.addEventListener('click', () => {
+            renderInventory();
+            el.inventoryModal.classList.add('active');
+        });
+
+        // 屋子商店按钮
+        el.roomShopBtn.addEventListener('click', () => {
+            renderShop('food');
+            el.shopModal.classList.add('active');
+            el.shopClose.style.display = 'block';
+            el.shopBack.style.display = 'none';
+        });
+
+        // 设置按钮
+        el.settingsBtn.addEventListener('click', () => {
+            el.settingsModal.classList.add('active');
+        });
+
+        // 设置关闭
+        el.settingsClose.addEventListener('click', () => {
+            el.settingsModal.classList.remove('active');
+        });
+
+        // 背景音乐开关
+        el.bgmToggle.addEventListener('click', () => {
+            el.bgmToggle.classList.toggle('active');
+            toggleBGMSetting();
+        });
+
+        // 音效开关
+        el.soundToggle.addEventListener('click', () => {
+            el.soundToggle.classList.toggle('active');
+            soundEnabled = !soundEnabled;
+        });
+
+        // 商店按钮（从主页点击）
         el.shopBtn.addEventListener('click', () => {
             renderShop('food');
             el.shopModal.classList.add('active');
+            // 显示关闭按钮，隐藏返回物品栏按钮
+            el.shopClose.style.display = 'block';
+            el.shopBack.style.display = 'none';
         });
 
-        // 商店关闭
+        // 商店关闭（返回主页）
         el.shopClose.addEventListener('click', () => {
             el.shopModal.classList.remove('active');
+        });
+
+        // 商店返回物品栏
+        el.shopBack.addEventListener('click', () => {
+            el.shopModal.classList.remove('active');
+            // 重新渲染物品栏（可能已购买物品）
+            renderInventory();
+            el.inventoryModal.classList.add('active');
+            // 恢复按钮状态
+            el.shopBack.style.display = 'none';
+            el.shopClose.style.display = 'block';
         });
 
         // 商店标签切换
@@ -1808,10 +2304,30 @@
             el.albumPage.style.display = 'flex';
         });
 
+        // 记录当前页面状态
+        let currentPage = 'home'; // 'home' or 'room'
+        
+        el.albumBtn.addEventListener('click', () => {
+            currentPage = 'home';
+            renderAlbum();
+            el.homePage.style.display = 'none';
+            el.progressPage.style.display = 'none';
+            el.albumPage.style.display = 'flex';
+        });
+
+        el.roomAlbumBtn.addEventListener('click', () => {
+            currentPage = 'room';
+            renderAlbum();
+            el.roomPage.style.display = 'none';
+            el.albumPage.style.display = 'flex';
+        });
+
         el.albumBack.addEventListener('click', () => {
             el.albumPage.style.display = 'none';
             if (gameState.xiaohStatus === 'away') {
                 el.progressPage.style.display = 'flex';
+            } else if (currentPage === 'room') {
+                el.roomPage.style.display = 'block';
             } else {
                 el.homePage.style.display = 'flex';
             }
@@ -1896,7 +2412,7 @@
         }
 
         // ==================== 背景时间切换 ====================
-        function setBackgroundByTime() {
+        function setBackgroundByTime(auto = true) {
             const hour = new Date().getHours();
             const homePage = document.getElementById('home-page');
             
@@ -1904,15 +2420,48 @@
             
             if (hour >= 6 && hour < 18) {
                 homePage.classList.add('day');
+                el.dayNightToggle.innerHTML = '🌙 切换夜晚';
             } else {
                 homePage.classList.add('night');
+                el.dayNightToggle.innerHTML = '☀️ 切换白天';
+            }
+            
+            if (!auto) {
+                // 手动切换时停止自动检测一段时间
+                clearInterval(window.dayNightInterval);
+                window.dayNightInterval = setTimeout(() => {
+                    window.dayNightInterval = setInterval(setBackgroundByTime, 60000);
+                }, 5 * 60 * 1000); // 5分钟后恢复自动检测
             }
         }
+
+        // 手动切换昼夜
+        el.dayNightToggle.addEventListener('click', () => {
+            const homePage = document.getElementById('home-page');
+            
+            if (homePage.classList.contains('day')) {
+                homePage.classList.remove('day');
+                homePage.classList.add('night');
+                el.dayNightToggle.innerHTML = '☀️ 切换白天';
+            } else {
+                homePage.classList.remove('night');
+                homePage.classList.add('day');
+                el.dayNightToggle.innerHTML = '🌙 切换夜晚';
+            }
+            
+            // 停止自动检测5分钟
+            clearInterval(window.dayNightInterval);
+            window.dayNightInterval = setTimeout(() => {
+                setBackgroundByTime();
+                window.dayNightInterval = setInterval(setBackgroundByTime, 60000);
+            }, 5 * 60 * 1000);
+        });
 
         // ==================== 初始化 ====================
         loadGame();
         startMushroomSpawning();
         setBackgroundByTime();
+        initBGM();
         
         // 每分钟检查一次时间，自动切换背景
         setInterval(setBackgroundByTime, 60000);
