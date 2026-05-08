@@ -167,113 +167,30 @@
             100% { opacity: 0; transform: scale(1.5); }
         }
 
-        /* 小H角色 */
+        /* 小H角色（待机序列帧） */
         #xiaoh-character {
             position: absolute;
             bottom: 22%;
             left: 50%;
             transform: translateX(-50%);
-            width: 100px;
-            height: 100px;
+            width: auto;
+            height: auto;
             z-index: 60;
             transition: all 0.5s ease;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
         }
 
-        .xiaoh-body {
-            width: 80px;
-            height: 70px;
-            background: linear-gradient(180deg, #F5A623 0%, #E8941F 100%);
-            border-radius: 50%;
-            position: relative;
-            margin: 0 auto;
-            border: 3px solid #5D3A1A;
-        }
-
-        .xiaoh-face {
-            position: absolute;
-            width: 50px;
-            height: 35px;
-            background: #FFF8E7;
-            border-radius: 50%;
-            top: 15px;
-            left: 50%;
-            transform: translateX(-50%);
-            border: 2px solid #5D3A1A;
-        }
-
-        .xiaoh-eye {
-            width: 8px;
-            height: 10px;
-            background: #5D3A1A;
-            border-radius: 50%;
-            position: absolute;
-            top: 8px;
-        }
-        .xiaoh-eye.left { left: 12px; }
-        .xiaoh-eye.right { right: 12px; }
-
-        .xiaoh-nose {
-            width: 10px;
-            height: 8px;
-            background: #FF6B6B;
-            border-radius: 50%;
-            position: absolute;
-            bottom: 8px;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        .xiaoh-mouth {
-            width: 20px;
-            height: 10px;
-            border: 2px solid #5D3A1A;
-            border-top: none;
-            border-radius: 0 0 20px 20px;
-            position: absolute;
-            bottom: 2px;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        .xiaoh-ear {
-            width: 20px;
-            height: 25px;
-            background: linear-gradient(180deg, #F5A623 0%, #E8941F 100%);
-            border-radius: 50% 50% 0 0;
-            position: absolute;
-            top: -15px;
-            border: 3px solid #5D3A1A;
-            border-bottom: none;
-        }
-        .xiaoh-ear.left { left: 5px; transform: rotate(-15deg); }
-        .xiaoh-ear.right { right: 5px; transform: rotate(15deg); }
-
-        .xiaoh-ear-inner {
-            width: 12px;
-            height: 18px;
-            background: #FFD4A3;
-            border-radius: 50% 50% 0 0;
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        .xiaoh-tail {
-            width: 25px;
-            height: 25px;
-            background: linear-gradient(180deg, #F5A623 0%, #E8941F 100%);
-            border-radius: 50%;
-            position: absolute;
-            right: -10px;
-            top: 20px;
-            border: 2px solid #5D3A1A;
-            animation: tail-wag 2s infinite;
-        }
-
-        @keyframes tail-wag {
-            0%, 100% { transform: rotate(0deg); }
-            50% { transform: rotate(20deg); }
+        .xiaoh-sprite-img {
+            display: block;
+            height: 120px;
+            width: auto;
+            max-width: 140px;
+            object-fit: contain;
+            pointer-events: none;
+            user-select: none;
+            -webkit-user-drag: none;
         }
 
         /* 小H状态动画 */
@@ -284,16 +201,6 @@
         @keyframes breathe {
             0%, 100% { transform: translateX(-50%) scale(1); }
             50% { transform: translateX(-50%) scale(1.02); }
-        }
-
-        .xiaoh-running {
-            animation: run 0.5s infinite;
-        }
-
-        @keyframes run {
-            0%, 100% { transform: translateX(-50%) translateY(0) rotate(0deg); }
-            25% { transform: translateX(-50%) translateY(-10px) rotate(-5deg); }
-            75% { transform: translateX(-50%) translateY(-5px) rotate(5deg); }
         }
 
         .xiaoh-away {
@@ -977,17 +884,7 @@
 
             <!-- 小H -->
             <div id="xiaoh-character" class="xiaoh-idle">
-                <div class="xiaoh-body">
-                    <div class="xiaoh-ear left"><div class="xiaoh-ear-inner"></div></div>
-                    <div class="xiaoh-ear right"><div class="xiaoh-ear-inner"></div></div>
-                    <div class="xiaoh-face">
-                        <div class="xiaoh-eye left"></div>
-                        <div class="xiaoh-eye right"></div>
-                        <div class="xiaoh-nose"></div>
-                        <div class="xiaoh-mouth"></div>
-                    </div>
-                    <div class="xiaoh-tail"></div>
-                </div>
+                <img class="xiaoh-sprite-img" id="xiaoh-sprite-img" src="assets/待机/001.png" alt="" draggable="false" />
             </div>
 
             <!-- 出发按钮 -->
@@ -1212,6 +1109,7 @@
             goBtn: document.getElementById('go-btn'),
             shopBtn: document.getElementById('shop-btn'),
             xiaoh: document.getElementById('xiaoh-character'),
+            xiaohSpriteImg: document.getElementById('xiaoh-sprite-img'),
             ground: document.getElementById('ground'),
             goModal: document.getElementById('go-modal'),
             photoModal: document.getElementById('photo-modal'),
@@ -1269,6 +1167,32 @@
 
         function randomChoice(arr) {
             return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        // 小H待机序列帧（assets/待机/001.png … 023.png）
+        const XIAOH_IDLE_FRAMES = 23;
+        const XIAOH_IDLE_MS = 200;
+        let xiaohIdleTimer = null;
+        let xiaohIdleFrame = 0;
+
+        function xiaohIdleFrameSrc(index) {
+            const n = String(index + 1).padStart(3, '0');
+            return 'assets/待机/' + n + '.png';
+        }
+
+        function startXiaohIdleAnim() {
+            if (xiaohIdleTimer || !el.xiaohSpriteImg) return;
+            xiaohIdleTimer = setInterval(() => {
+                xiaohIdleFrame = (xiaohIdleFrame + 1) % XIAOH_IDLE_FRAMES;
+                el.xiaohSpriteImg.src = xiaohIdleFrameSrc(xiaohIdleFrame);
+            }, XIAOH_IDLE_MS);
+        }
+
+        function stopXiaohIdleAnim() {
+            if (xiaohIdleTimer) {
+                clearInterval(xiaohIdleTimer);
+                xiaohIdleTimer = null;
+            }
         }
 
         // ==================== 蘑菇生成系统 ====================
@@ -1666,6 +1590,7 @@
             el.goBtn.textContent = '🚶 已出门';
 
             // 小H出门动画
+            stopXiaohIdleAnim();
             el.xiaoh.classList.remove('xiaoh-idle');
             el.xiaoh.classList.add('xiaoh-away');
 
@@ -1773,6 +1698,9 @@
             el.homePage.style.display = 'flex';
             el.xiaoh.classList.remove('xiaoh-away');
             el.xiaoh.classList.add('xiaoh-idle');
+            xiaohIdleFrame = 0;
+            if (el.xiaohSpriteImg) el.xiaohSpriteImg.src = xiaohIdleFrameSrc(0);
+            startXiaohIdleAnim();
             el.goBtn.disabled = false;
             el.goBtn.textContent = '🎒 出发探险';
 
@@ -1913,6 +1841,7 @@
         loadGame();
         startMushroomSpawning();
         setBackgroundByTime();
+        startXiaohIdleAnim();
         
         // 每分钟检查一次时间，自动切换背景
         setInterval(setBackgroundByTime, 60000);
