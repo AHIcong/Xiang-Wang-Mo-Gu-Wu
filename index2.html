@@ -376,6 +376,50 @@
         }
         #room-btn:active { transform: scale(0.95); }
 
+        /* 门按钮：白天为小框对齐门洞；夜间为全屏锚点 + cover（撤销「昼夜同一全屏」后的状态） */
+        #door-btn {
+            position: absolute;
+            top: 41.9%;
+            left: 59.7%;
+            transform: translate(-50%, -50%);
+            width: 18%;
+            height: 22%;
+            min-width: 0;
+            min-height: 0;
+            overflow: hidden;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            z-index: 55;
+            padding: 0;
+        }
+        /* 夜间与白天同量级小框，避免 100% 占满屏；位置可按背景微调 left/top */
+        #home-page.night #door-btn {
+            left: 60%;
+            top: 42%;
+            width: 18%;
+            height: 22%;
+        }
+        #door-btn img {
+            width: 100%;
+            height: 100%;
+            object-fit: fill;
+            object-position: center center;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+            transition: transform 0.2s;
+        }
+        #home-page.night #door-btn img {
+            object-fit: cover;
+            object-position: 60.8% 40.7%;
+        }
+        #door-btn:hover img {
+            transform: scale(1.02);
+        }
+        #door-btn:active img {
+            transform: scale(0.98);
+        }
+
         /* 屋子界面 */
         #room-page {
             display: none;
@@ -1161,7 +1205,7 @@
 <body>
     <div id="game-container">
         <!-- 首页 -->
-        <div id="home-page">
+        <div id="home-page" class="day">
             <!-- 云朵 -->
             <div class="cloud cloud1"></div>
             <div class="cloud cloud2"></div>
@@ -1174,6 +1218,11 @@
                 <span class="mushroom-icon">🍄</span>
                 <span id="mushroom-num">20</span>
             </div>
+            
+            <!-- 门按钮 -->
+            <button id="door-btn">
+                <img id="door-img" src="assets/组件/白天门.png" alt="门" />
+            </button>
 
             <!-- 蘑菇容器 -->
             <div class="ground" id="ground">
@@ -1550,6 +1599,8 @@
             xiaohCharacterRoom: document.getElementById('xiaoh-character-room'),
             xiaohSpriteImgRoom: document.getElementById('xiaoh-sprite-img-room'),
             ground: document.getElementById('ground'),
+            doorBtn: document.getElementById('door-btn'),
+            doorImg: document.getElementById('door-img'),
             goModal: document.getElementById('go-modal'),
             photoModal: document.getElementById('photo-modal'),
             postcardModal: document.getElementById('postcard-modal'),
@@ -1625,7 +1676,9 @@
             if (xiaohIdleTimer || !el.xiaohSpriteImg) return;
             xiaohIdleTimer = setInterval(() => {
                 xiaohIdleFrame = (xiaohIdleFrame + 1) % XIAOH_IDLE_FRAMES;
-                el.xiaohSpriteImg.src = xiaohIdleFrameSrc(xiaohIdleFrame);
+                const src = xiaohIdleFrameSrc(xiaohIdleFrame);
+                if (el.xiaohSpriteImg) el.xiaohSpriteImg.src = src;
+                if (el.xiaohSpriteImgRoom) el.xiaohSpriteImgRoom.src = src;
             }, XIAOH_IDLE_MS);
         }
 
@@ -2544,6 +2597,9 @@
                 el.dayNightToggle.innerHTML = '☀️ 切换白天';
             }
             
+            // 更新门图片
+            updateDoorImage();
+            
             if (!auto) {
                 // 手动切换时停止自动检测一段时间
                 clearInterval(window.dayNightInterval);
@@ -2552,6 +2608,26 @@
                 }, 5 * 60 * 1000); // 5分钟后恢复自动检测
             }
         }
+
+        // 更新门按钮图片
+        function updateDoorImage() {
+            const homePage = document.getElementById('home-page');
+            if (homePage.classList.contains('day')) {
+                el.doorImg.src = 'assets/组件/白天门.png';
+            } else {
+                el.doorImg.src = 'assets/组件/晚上的门.png';
+            }
+        }
+
+        // 门按钮点击事件 - 进入室内场景
+        el.doorBtn.addEventListener('click', () => {
+            updateRoomBackground();
+            updateRoomMushroomDisplay();
+            el.roomPage.classList.add('active');
+            el.roomPage.style.display = 'block';
+            el.homePage.style.display = 'none';
+            setTimeout(checkSleepCondition, 100);
+        });
 
         // 手动切换昼夜
         el.dayNightToggle.addEventListener('click', () => {
@@ -2566,6 +2642,9 @@
                 homePage.classList.add('day');
                 el.dayNightToggle.innerHTML = '🌙 切换夜晚';
             }
+            
+            // 更新门图片
+            updateDoorImage();
             
             // 停止自动检测5分钟
             clearInterval(window.dayNightInterval);
