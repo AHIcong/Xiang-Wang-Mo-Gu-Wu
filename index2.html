@@ -15,7 +15,7 @@
             font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif;
             background: #f5f0e6;
             overflow: hidden;
-            touch-action: manipulation;
+            touch-action: pan-y pinch-zoom;
         }
 
         #game-container {
@@ -495,13 +495,16 @@
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+            box-shadow: 0 4px 12px rgba(238, 90, 90, 0.4);
             z-index: 100;
-        }
-        #room-go-btn:hover {
-            transform: scale(1.02);
+            transition: all 0.2s;
         }
         #room-go-btn:active { transform: scale(0.95); }
+        #room-go-btn:disabled {
+            background: #ccc;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
         
         /* 屋子商店按钮 */
         #room-shop-btn {
@@ -691,6 +694,8 @@
             gap: 15px;
             max-height: 300px;
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
         }
 
         .shop-item {
@@ -772,11 +777,32 @@
         }
 
         .inventory-items {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            max-height: 250px;
+            display: block;
+            max-height: 280px;
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+        }
+
+        .inventory-section {
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #5D3A1A;
+            margin-bottom: 10px;
+            padding-left: 5px;
+        }
+
+        .section-empty {
+            font-size: 13px;
+            color: #999;
+            text-align: center;
+            padding: 10px;
+            background: #f5f5f5;
+            border-radius: 10px;
         }
 
         .inventory-item {
@@ -888,6 +914,80 @@
             color: #666;
             margin-top: 10px;
         }
+        .modal-btn.danger {
+            background: #FF6B6B;
+            color: white;
+        }
+        .modal-btn.danger:hover {
+            background: #EE5A5A;
+        }
+
+        /* 回收站样式 */
+        .trash-grid {
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 10px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        .trash-item {
+            background: #E8DCC4;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            position: relative;
+            padding: 5px;
+        }
+        .trash-item-img {
+            width: 100%;
+            height: 80px;
+            background: #F5F5F5;
+            border: 2px solid #8B7355;
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+        }
+        .trash-item-photo {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background: #fff;
+        }
+        .trash-item-info {
+            padding: 5px;
+            font-size: 12px;
+            text-align: center;
+        }
+        .trash-item-restore {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 24px;
+            height: 24px;
+            background: rgba(78, 205, 196, 0.9);
+            border: none;
+            border-radius: 50%;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        .trash-empty {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 40px 20px;
+        }
+        .trash-empty-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+        .trash-empty-text {
+            font-size: 16px;
+            color: #999;
+        }
         .modal-btn:disabled {
             background: #ccc !important;
             cursor: not-allowed;
@@ -902,6 +1002,32 @@
             align-items: center;
             justify-content: center;
             position: relative;
+        }
+
+        /* 首页底部进度条 */
+        #home-progress {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70%;
+            z-index: 100;
+        }
+
+        .simple-progress-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .simple-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #FFD700 0%, #FF6B6B 50%, #4ECDC4 100%);
+            border-radius: 4px;
+            transition: width 0.1s linear;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
         }
 
         .progress-xiaoh {
@@ -1060,6 +1186,30 @@
             text-align: center;
             position: relative;
         }
+        .album-trash-btn {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .album-trash-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-50%) scale(1.1);
+        }
+        .album-trash-btn.has-items {
+            background: #FF6B6B;
+        }
         .album-back {
             position: absolute;
             left: 15px;
@@ -1086,36 +1236,78 @@
         .album-grid {
             flex: 1;
             overflow-y: auto;
-            padding: 15px;
+            padding: 10px;
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
+            gap: 8px;
         }
 
         .album-item {
-            background: white;
+            background: #E8DCC4;
             border-radius: 15px;
             overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             cursor: pointer;
             transition: transform 0.2s;
+            padding: 8px;
+            height: 200px;
+            display: flex;
+            flex-direction: column;
         }
-        .album-item:active { transform: scale(0.95); }
+        .album-item:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+        }
+        .album-item:active { transform: scale(0.98); }
 
         .album-item-img {
             width: 100%;
-            height: 120px;
-            background: linear-gradient(180deg, #87CEEB 0%, #90EE90 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 40px;
+            height: 130px;
+            background: #F5F5F5;
+            border: 3px solid #8B7355;
+            border-radius: 8px;
+            overflow: hidden;
             position: relative;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .album-item-photo {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background: #fff;
         }
         .album-item-xiaoh {
             position: absolute;
             font-size: 35px;
-            bottom: 10px;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 5;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        }
+        .album-item-delete {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 28px;
+            height: 28px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            font-size: 14px;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            transition: all 0.2s;
+        }
+        .album-item:hover .album-item-delete {
+            display: flex;
+        }
+        .album-item-delete:hover {
+            background: #FF6B6B;
+            transform: scale(1.1);
         }
         .album-item-info {
             padding: 10px;
@@ -1165,14 +1357,14 @@
             width: 90%;
             max-width: 400px;
             height: 300px;
-            background: linear-gradient(180deg, #87CEEB 0%, #90EE90 100%);
             border-radius: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 80px;
+            overflow: hidden;
             position: relative;
-            margin-bottom: 20px;
+        }
+        .viewer-photo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
         .viewer-xiaoh {
             position: absolute;
@@ -1244,6 +1436,13 @@
             <button id="shop-btn">🛒 商店</button>
         </div>
 
+        <!-- 底部进度条（探险时显示） -->
+        <div id="home-progress" style="display: none;">
+            <div class="simple-progress-bar">
+                <div class="simple-progress-fill" id="home-progress-bar"></div>
+            </div>
+        </div>
+
         <!-- 屋子界面 -->
         <div id="room-page">
             <!-- 相册按钮 -->
@@ -1287,6 +1486,7 @@
                 <div class="album-back" id="album-back">←</div>
                 <div class="album-title">明信片相册</div>
                 <div class="album-count" id="album-count">已收集 0 张</div>
+                <button class="album-trash-btn" id="album-trash-btn">🗑️</button>
             </div>
             <div class="album-grid" id="album-grid">
                 <div class="album-empty">
@@ -1338,14 +1538,14 @@
             <div class="modal-content">
                 <div class="postcard-header">📮 小H寄来明信片！</div>
                 <div class="postcard-image" id="postcard-img">
-                    <span style="font-size:100px" id="postcard-bg-emoji">🌾</span>
+                    <img id="postcard-bg-image" src="" class="postcard-bg">
                     <span class="postcard-xiaoh">🐕</span>
                 </div>
                 <div class="postcard-content">
                     <div class="postcard-text" id="postcard-text">今天的田野好大，跑了好久~</div>
                     <div class="postcard-guest" id="postcard-guest">💬 何老师："看到小H跑那么开心，我也开心呀~"</div>
                     <div class="postcard-reward">
-                        <span>🦴</span>
+                        <span>🍄</span>
                         <span id="reward-num">+12</span>
                     </div>
                     <div class="postcard-buttons">
@@ -1418,10 +1618,27 @@
             </div>
         </div>
 
+        <!-- 回收站弹窗 -->
+        <div class="modal-overlay" id="trash-modal">
+            <div class="modal-content">
+                <div class="modal-header">🗑️ 回收站</div>
+                <div class="trash-grid" id="trash-grid">
+                    <div class="trash-empty">
+                        <div class="trash-empty-icon">🗑️</div>
+                        <div class="trash-empty-text">回收站是空的~</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="modal-btn secondary" id="trash-close">关闭</button>
+                    <button class="modal-btn danger" id="trash-clear">清空回收站</button>
+                </div>
+            </div>
+        </div>
+
         <!-- 大图查看器 -->
         <div class="photo-viewer" id="photo-viewer">
             <div class="viewer-image" id="viewer-img">
-                <span style="font-size:100px" id="viewer-bg">🌾</span>
+                <img id="viewer-photo" src="" class="viewer-photo">
                 <span class="viewer-xiaoh">🐕</span>
             </div>
             <div class="viewer-text" id="viewer-text">今天的田野好大，跑了好久~</div>
@@ -1440,20 +1657,20 @@
 
         const POSTCARDS = {
             field: [
-                { text: '今天的田野好大，跑了好久~', emoji: '🌾' },
-                { text: '累了，躺一会儿...', emoji: '🌾' }
+                { text: '今天的田野好大，跑了好久~', image: 'assets/明信片素材/01.png', name: '春日聚会' },
+                { text: '累了，躺一会儿...', image: 'assets/明信片素材/02.png', name: '森林微笑' }
             ],
             river: [
-                { text: '河里的自己好帅呀', emoji: '🌊' },
-                { text: '哇！抓到了！', emoji: '🌊' }
+                { text: '河里的自己好帅呀', image: 'assets/明信片素材/03.png', name: '村舍午餐' },
+                { text: '哇！抓到了！', image: 'assets/明信片素材/04.png', name: '温馨家庭' }
             ],
             neighbor: [
-                { text: '那几只鸡好肥...', emoji: '🏠' },
-                { text: '交到新朋友啦！', emoji: '🏠' }
+                { text: '那几只鸡好肥...', image: 'assets/明信片素材/05.png', name: '乡村聚餐' },
+                { text: '交到新朋友啦！', image: 'assets/明信片素材/06.png', name: '乡村暖意' }
             ],
             market: [
-                { text: '口水都要流下来了', emoji: '🏪' },
-                { text: '这个好漂亮！', emoji: '🏪' }
+                { text: '口水都要流下来了', image: 'assets/明信片素材/01.png', name: '春日聚会' },
+                { text: '这个好漂亮！', image: 'assets/明信片素材/02.png', name: '森林微笑' }
             ]
         };
 
@@ -1485,6 +1702,7 @@
             xiaohStatus: 'home', // home / away / return
             currentTrip: null,
             album: [],
+            trash: [], // 回收站
             tripTimer: null,
             progressInterval: null,
             selectedItem: null,
@@ -1551,6 +1769,23 @@
             }
         }
         
+        // 播放按钮点击音效
+        function playClickSound() {
+            if (!soundEnabled) return;
+            
+            try {
+                const audio = new Audio('assets/button-click.mp3');
+                audio.volume = 0.3;
+                audio.play().catch(err => {
+                    console.log('Button click audio play failed:', err);
+                    generateSimpleClickSound();
+                });
+            } catch (e) {
+                console.log('Button click audio not supported:', e);
+                generateSimpleClickSound();
+            }
+        }
+        
         function generateSimpleSound() {
             if (!soundEnabled) return;
             
@@ -1572,6 +1807,54 @@
                 oscillator.stop(audioContext.currentTime + 0.15);
             } catch (e) {
                 console.log('Sound generation failed:', e);
+            }
+        }
+        
+        function generateSimpleClickSound() {
+            if (!soundEnabled) return;
+            
+            try {
+                let audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(1200, audioContext.currentTime + 0.05);
+                
+                gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.08);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.08);
+            } catch (e) {
+                console.log('Click sound generation failed:', e);
+            }
+        }
+        
+        function playClickSound() {
+            if (!soundEnabled) return;
+            
+            try {
+                let audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(1200, audioContext.currentTime + 0.05);
+                
+                gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.08);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.08);
+            } catch (e) {
+                console.log('Click sound generation failed:', e);
             }
         }
 
@@ -1611,12 +1894,20 @@
             albumBack: document.getElementById('album-back'),
             albumGrid: document.getElementById('album-grid'),
             albumCount: document.getElementById('album-count'),
+            albumTrashBtn: document.getElementById('album-trash-btn'),
+            trashModal: document.getElementById('trash-modal'),
+            trashGrid: document.getElementById('trash-grid'),
+            trashClose: document.getElementById('trash-close'),
+            trashClear: document.getElementById('trash-clear'),
             confirmGo: document.getElementById('confirm-go'),
             cancelGo: document.getElementById('cancel-go'),
             bentoCards: document.querySelectorAll('.bento-card'),
             progressBar: document.getElementById('progress-bar'),
             progressTime: document.getElementById('progress-time'),
             progressDest: document.getElementById('progress-dest'),
+            // 首页进度条元素
+            homeProgress: document.getElementById('home-progress'),
+            homeProgressBar: document.getElementById('home-progress-bar'),
             photoOk: document.getElementById('photo-ok'),
             collectReward: document.getElementById('collect-reward'),
             sharePostcard: document.getElementById('share-postcard'),
@@ -1639,8 +1930,10 @@
 
         // ==================== 工具函数 ====================
         function updateMushroomDisplay() {
-            el.mushroomNum.textContent = gameState.mushrooms;
-            el.roomMushroomNum.textContent = gameState.mushrooms;
+            // 确保蘑菇币是有效的数字
+            const mushroomCount = isNaN(gameState.mushrooms) ? 0 : gameState.mushrooms;
+            el.mushroomNum.textContent = mushroomCount;
+            el.roomMushroomNum.textContent = mushroomCount;
         }
 
         function showFloatText(x, y, text) {
@@ -1852,8 +2145,31 @@
             if (gameState.mushroomsOnGround.length >= 5) return;
 
             const mushroomType = randomChoice(MUSHROOM_TYPES);
-            const x = randomInt(30, 380); // ground宽度430，留出边距
-            const y = randomInt(50, 280); // ground高度350，留出底部空间
+            const size = mushroomType.size === 'large' ? 50 : 35; // 蘑菇大小
+            
+            // 定义不能生成蘑菇的区域（按钮位置和小狗）
+            const forbiddenAreas = [
+                { x: 0, y: 0, width: 120, height: 80 }, // 左上角相册按钮区域
+                { x: 0, y: 270, width: 120, height: 80 }, // 左下角探险按钮区域
+                { x: 310, y: 270, width: 120, height: 80 }, // 右下角商店按钮区域
+                { x: 310, y: 220, width: 120, height: 80 }, // 右中部小屋按钮区域
+                { x: 130, y: 60, width: 170, height: 150 } // 中间小狗位置区域（包含尾巴）
+            ];
+
+            // 寻找有效的生成位置
+            let x, y;
+            let attempts = 0;
+            const maxAttempts = 50;
+            
+            do {
+                x = randomInt(20, 430 - size - 20); // 留出边距
+                y = randomInt(30, 350 - size - 30); // 留出上下边距
+                attempts++;
+            } while (attempts < maxAttempts && isInForbiddenArea(x, y, size, forbiddenAreas));
+
+            if (attempts >= maxAttempts) {
+                return; // 找不到合适位置，放弃生成
+            }
 
             const mushroom = {
                 id: mushroomIdCounter++,
@@ -1865,6 +2181,19 @@
 
             gameState.mushroomsOnGround.push(mushroom);
             renderMushroom(mushroom);
+        }
+
+        // 检查位置是否在禁止区域内
+        function isInForbiddenArea(x, y, size, forbiddenAreas) {
+            for (const area of forbiddenAreas) {
+                if (x < area.x + area.width &&
+                    x + size > area.x &&
+                    y < area.y + area.height &&
+                    y + size > area.y) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         function renderMushroom(mushroom) {
@@ -1887,8 +2216,6 @@
         }
 
         function collectMushroom(elMushroom, mushroom) {
-            if (gameState.xiaohStatus !== 'home') return;
-
             // 播放采蘑菇音效
             playPickSound();
 
@@ -1938,37 +2265,86 @@
         // ==================== 物品栏逻辑 ====================
         function renderInventory() {
             el.inventoryItems.innerHTML = '';
-            gameState.selectedItem = null;
-            el.confirmItem.disabled = true;
+            gameState.selectedFood = null;
+            gameState.selectedProp = null;
+            updateConfirmButton();
 
-            let hasItems = false;
-            Object.keys(gameState.inventory).forEach(itemId => {
-                if (gameState.inventory[itemId] > 0) {
-                    hasItems = true;
-                    const item = getItemById(itemId);
-                    if (item) {
-                        const itemEl = document.createElement('div');
-                        itemEl.className = 'inventory-item';
-                        itemEl.dataset.itemId = itemId;
-                        itemEl.innerHTML = `
-                            <div class="item-icon">${item.emoji}</div>
-                            <div class="item-name">${item.name}</div>
-                            <div class="item-count">${gameState.inventory[itemId]}</div>
-                        `;
-                        itemEl.addEventListener('click', () => {
-                            selectInventoryItem(itemId);
-                        });
-                        el.inventoryItems.appendChild(itemEl);
-                    }
+            let hasFood = false;
+            let hasProp = false;
+
+            // 渲染食物区域
+            const foodSection = document.createElement('div');
+            foodSection.className = 'inventory-section';
+            foodSection.innerHTML = '<div class="section-title">🍖 食物（必须选择）</div>';
+            
+            SHOP_ITEMS.food.forEach(item => {
+                if (gameState.inventory[item.id] > 0) {
+                    hasFood = true;
+                    const itemEl = document.createElement('div');
+                    itemEl.className = `inventory-item ${gameState.selectedFood === item.id ? 'selected' : ''}`;
+                    itemEl.dataset.itemId = item.id;
+                    itemEl.dataset.category = 'food';
+                    itemEl.innerHTML = `
+                        <div class="item-icon">${item.emoji}</div>
+                        <div class="item-name">${item.name}</div>
+                        <div class="item-count">${gameState.inventory[item.id]}</div>
+                    `;
+                    itemEl.addEventListener('click', () => {
+                        selectInventoryItem(item.id, 'food');
+                    });
+                    foodSection.appendChild(itemEl);
                 }
             });
 
-            if (hasItems) {
+            if (!hasFood) {
+                foodSection.innerHTML += '<div class="section-empty">没有食物了~</div>';
+            }
+
+            // 渲染道具区域
+            const propSection = document.createElement('div');
+            propSection.className = 'inventory-section';
+            propSection.innerHTML = '<div class="section-title">🎒 道具（可选）</div>';
+            
+            SHOP_ITEMS.prop.forEach(item => {
+                if (gameState.inventory[item.id] > 0) {
+                    hasProp = true;
+                    const itemEl = document.createElement('div');
+                    itemEl.className = `inventory-item ${gameState.selectedProp === item.id ? 'selected' : ''}`;
+                    itemEl.dataset.itemId = item.id;
+                    itemEl.dataset.category = 'prop';
+                    itemEl.innerHTML = `
+                        <div class="item-icon">${item.emoji}</div>
+                        <div class="item-name">${item.name}</div>
+                        <div class="item-count">${gameState.inventory[item.id]}</div>
+                    `;
+                    itemEl.addEventListener('click', () => {
+                        selectInventoryItem(item.id, 'prop');
+                    });
+                    propSection.appendChild(itemEl);
+                }
+            });
+
+            if (!hasProp) {
+                propSection.innerHTML += '<div class="section-empty">没有道具~</div>';
+            }
+
+            el.inventoryItems.appendChild(foodSection);
+            el.inventoryItems.appendChild(propSection);
+
+            // 如果没有食物，显示空状态提示去商店（即使有道具也不行，必须有食物才能出发）
+            if (hasFood) {
                 el.inventoryEmpty.style.display = 'none';
-                el.inventoryItems.style.display = 'grid';
+                el.inventoryItems.style.display = 'block';
             } else {
                 el.inventoryEmpty.style.display = 'block';
                 el.inventoryItems.style.display = 'none';
+                // 根据是否有道具显示不同的提示文本
+                const emptyText = document.querySelector('.empty-text');
+                if (emptyText) {
+                    emptyText.innerHTML = hasProp 
+                        ? '道具准备好了，但食物不够！<br>快去商店买些好吃的吧！' 
+                        : '哎呀~ 背包空空如也！<br>快去商店采购吧！';
+                }
             }
         }
 
@@ -1980,19 +2356,43 @@
             return null;
         }
 
-        function selectInventoryItem(itemId) {
-            document.querySelectorAll('.inventory-item').forEach(el => el.classList.remove('selected'));
+        function selectInventoryItem(itemId, category) {
+            // 取消同类别的其他选择
+            document.querySelectorAll(`.inventory-item[data-category="${category}"]`).forEach(el => el.classList.remove('selected'));
+            
             const selectedEl = document.querySelector(`.inventory-item[data-item-id="${itemId}"]`);
             if (selectedEl) {
-                selectedEl.classList.add('selected');
+                // 如果点击的是已选中的道具，则取消选择
+                if (category === 'prop' && gameState.selectedProp === itemId) {
+                    gameState.selectedProp = null;
+                } else {
+                    selectedEl.classList.add('selected');
+                    if (category === 'food') {
+                        gameState.selectedFood = itemId;
+                    } else {
+                        gameState.selectedProp = itemId;
+                    }
+                }
             }
-            gameState.selectedItem = itemId;
-            el.confirmItem.disabled = false;
-            el.confirmItem.textContent = `使用 ${getItemById(itemId)?.name} 出发`;
+            
+            updateConfirmButton();
+        }
+
+        function updateConfirmButton() {
+            if (gameState.selectedFood) {
+                const foodName = getItemById(gameState.selectedFood)?.name;
+                const propName = gameState.selectedProp ? ` + ${getItemById(gameState.selectedProp)?.name}` : '';
+                el.confirmItem.disabled = false;
+                el.confirmItem.textContent = `使用 ${foodName}${propName} 出发`;
+            } else {
+                el.confirmItem.disabled = true;
+                el.confirmItem.textContent = '请选择食物';
+            }
         }
 
         // ==================== 出发逻辑 ====================
         el.goBtn.addEventListener('click', () => {
+            playClickSound();
             if (gameState.xiaohStatus === 'away') {
                 showFloatText(window.innerWidth / 2, window.innerHeight * 0.7, '小H已经出门啦！');
                 return;
@@ -2008,11 +2408,13 @@
 
         // 物品栏关闭
         el.inventoryClose.addEventListener('click', () => {
+            playClickSound();
             el.inventoryModal.classList.remove('active');
         });
 
         // 从物品栏去商店
         el.goToShop.addEventListener('click', () => {
+            playClickSound();
             el.inventoryModal.classList.remove('active');
             renderShop('food');
             el.shopModal.classList.add('active');
@@ -2023,22 +2425,37 @@
 
         // 确认选择物品出发
         el.confirmItem.addEventListener('click', () => {
-            if (!gameState.selectedItem) return;
+            playClickSound();
+            if (!gameState.selectedFood) return;
 
-            const selectedItem = getItemById(gameState.selectedItem);
-            if (!selectedItem) return;
+            const selectedFood = getItemById(gameState.selectedFood);
+            if (!selectedFood) return;
 
-            // 消耗物品
-            gameState.inventory[gameState.selectedItem]--;
+            // 消耗食物
+            gameState.inventory[gameState.selectedFood]--;
+            
+            // 如果选择了道具，也消耗道具
+            let selectedProp = null;
+            if (gameState.selectedProp) {
+                selectedProp = getItemById(gameState.selectedProp);
+                gameState.inventory[gameState.selectedProp]--;
+            }
             
             // 根据食物等级和道具确定目的地
-            const destination = selectDestination(selectedItem);
+            const destination = selectDestination(selectedFood, selectedProp);
+            
+            // 计算奖励（根据食物等级）
+            const baseReward = selectedFood.level ? selectedFood.level * 5 : 5;
+            const reward = randomInt(baseReward, baseReward + 10);
+            
+            // 获取目的地key
+            const destKey = Object.keys(DESTINATIONS).find(k => DESTINATIONS[k] === destination);
             
             // 关闭物品栏
             el.inventoryModal.classList.remove('active');
 
             // 开始探险
-            startTrip(selectedItem, destination);
+            startTrip(selectedFood, destination, reward, destKey);
         });
 
         // ==================== 商店逻辑 ====================
@@ -2063,6 +2480,7 @@
             // 添加购买事件
             document.querySelectorAll('.buy-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
+                    playClickSound();
                     const itemId = e.target.dataset.itemId;
                     buyItem(itemId);
                 });
@@ -2107,6 +2525,7 @@
 
         // 进入小屋
         el.roomBtn.addEventListener('click', () => {
+            playClickSound();
             updateRoomBackground();
             updateRoomMushroomDisplay();
             el.roomPage.classList.add('active');
@@ -2118,6 +2537,7 @@
 
         // 返回庭院
         el.roomCourtyardBtn.addEventListener('click', () => {
+            playClickSound();
             el.roomPage.classList.remove('active');
             el.roomPage.style.display = 'none';
             el.homePage.style.display = 'block';
@@ -2127,12 +2547,14 @@
 
         // 屋子探险按钮
         el.roomGoBtn.addEventListener('click', () => {
+            playClickSound();
             renderInventory();
             el.inventoryModal.classList.add('active');
         });
 
         // 屋子商店按钮
         el.roomShopBtn.addEventListener('click', () => {
+            playClickSound();
             renderShop('food');
             el.shopModal.classList.add('active');
             el.shopClose.style.display = 'block';
@@ -2141,11 +2563,13 @@
 
         // 设置按钮
         el.settingsBtn.addEventListener('click', () => {
+            playClickSound();
             el.settingsModal.classList.add('active');
         });
 
         // 设置关闭
         el.settingsClose.addEventListener('click', () => {
+            playClickSound();
             el.settingsModal.classList.remove('active');
         });
 
@@ -2163,6 +2587,7 @@
 
         // 商店按钮（从主页点击）
         el.shopBtn.addEventListener('click', () => {
+            playClickSound();
             renderShop('food');
             el.shopModal.classList.add('active');
             // 显示关闭按钮，隐藏返回物品栏按钮
@@ -2172,11 +2597,13 @@
 
         // 商店关闭（返回主页）
         el.shopClose.addEventListener('click', () => {
+            playClickSound();
             el.shopModal.classList.remove('active');
         });
 
         // 商店返回物品栏
         el.shopBack.addEventListener('click', () => {
+            playClickSound();
             el.shopModal.classList.remove('active');
             // 重新渲染物品栏（可能已购买物品）
             renderInventory();
@@ -2194,16 +2621,16 @@
         });
 
         // ==================== 目的地选择逻辑 ====================
-        function selectDestination(item) {
+        function selectDestination(food, prop = null) {
             const destinations = Object.keys(DESTINATIONS);
             let weights = destinations.map(() => 1);
 
             // 根据食物等级调整权重
-            if (item.level) {
+            if (food.level) {
                 destinations.forEach((dest, index) => {
                     const destLevel = getDestinationLevel(dest);
-                    if (destLevel <= item.level) {
-                        weights[index] = item.level - destLevel + 1;
+                    if (destLevel <= food.level) {
+                        weights[index] = food.level - destLevel + 1;
                     } else {
                         weights[index] = 0.5;
                     }
@@ -2211,9 +2638,9 @@
             }
 
             // 根据道具增加特定目的地概率
-            if (item.boostDest && item.boostDest.length > 0) {
+            if (prop && prop.boostDest && prop.boostDest.length > 0) {
                 destinations.forEach((dest, index) => {
-                    if (item.boostDest.includes(dest)) {
+                    if (prop.boostDest.includes(dest)) {
                         weights[index] *= 2;
                     }
                 });
@@ -2258,11 +2685,13 @@
 
         // 取消出发
         el.cancelGo.addEventListener('click', () => {
+            playClickSound();
             el.goModal.classList.remove('active');
         });
 
         // 确认出发（旧便当系统）
         el.confirmGo.addEventListener('click', () => {
+            playClickSound();
             if (!gameState.selectedBento) return;
 
             const bento = gameState.selectedBento;
@@ -2325,33 +2754,30 @@
 
             // 更新状态
             gameState.xiaohStatus = 'away';
+            
+            // 同时更新庭院和屋子的探险按钮
             el.goBtn.disabled = true;
-            el.goBtn.textContent = '🚶 已出门';
+            el.goBtn.textContent = '已出发';
+            el.roomGoBtn.disabled = true;
+            el.roomGoBtn.textContent = '已出发';
 
-            // 小H出门动画
-            stopXiaohIdleAnim();
-            el.xiaoh.classList.remove('xiaoh-idle');
-            el.xiaoh.classList.add('xiaoh-away');
+            // 隐藏小狗
+            el.xiaoh.style.display = 'none';
+
+            // 显示底部进度条
+            el.homeProgress.style.display = 'block';
 
             // 关闭弹窗
             el.goModal.classList.remove('active');
 
-            // 切换到进度页面
-            setTimeout(() => {
-                el.homePage.style.display = 'none';
-                el.progressPage.style.display = 'flex';
-                startProgress();
-            }, 1000);
+            // 直接开始进度（在当前页面显示）
+            startProgress();
         }
 
         // ==================== 进度条逻辑 ====================
         function startProgress() {
             const trip = gameState.currentTrip;
             const totalTime = trip.time * 1000; // 毫秒
-            const photoTime = totalTime * 0.33; // 33%触发照片
-            let photoTriggered = false;
-
-            el.progressDest.textContent = '目的地：' + trip.destName;
 
             const startTime = Date.now();
 
@@ -2360,44 +2786,26 @@
                 const remaining = Math.max(0, totalTime - elapsed);
                 const progress = ((elapsed / totalTime) * 100);
 
-                el.progressBar.style.width = progress + '%';
-                el.progressTime.textContent = '剩余 ' + Math.ceil(remaining / 1000) + '秒';
+                // 更新首页的进度条
+                el.homeProgressBar.style.width = progress + '%';
 
-                // 33%触发途中照片
-                if (!photoTriggered && elapsed >= photoTime && elapsed < photoTime + 1000) {
-                    photoTriggered = true;
-                    showPhotoModal();
-                }
-
-                // 完成
+                // 完成 - 直接显示明信片（去掉途中照片）
                 if (remaining <= 0) {
                     clearInterval(gameState.progressInterval);
-                    setTimeout(() => {
-                        el.progressPage.style.display = 'none';
-                        showReturnModal();
-                    }, 500);
+                    // 隐藏进度条
+                    el.homeProgress.style.display = 'none';
+                    // 直接显示明信片
+                    showReturnModal();
                 }
             }, 100);
         }
-
-        // ==================== 途中照片弹窗 ====================
-        function showPhotoModal() {
-            const trip = gameState.currentTrip;
-            document.getElementById('photo-img').style.background = trip.destBg;
-            el.photoModal.classList.add('active');
-        }
-
-        el.photoOk.addEventListener('click', () => {
-            el.photoModal.classList.remove('active');
-        });
 
         // ==================== 归来弹窗 ====================
         function showReturnModal() {
             const trip = gameState.currentTrip;
 
             // 设置明信片内容
-            document.getElementById('postcard-bg-emoji').textContent = trip.destEmoji;
-            document.getElementById('postcard-img').style.background = trip.destBg;
+            document.getElementById('postcard-bg-image').src = trip.postcard.image;
             document.getElementById('postcard-text').textContent = trip.postcard.text;
             document.getElementById('postcard-guest').textContent = '💬 ' + trip.guestComment;
             document.getElementById('reward-num').textContent = '+' + trip.reward;
@@ -2410,6 +2818,7 @@
 
         // 领取奖励
         el.collectReward.addEventListener('click', () => {
+            playClickSound();
             const trip = gameState.currentTrip;
 
             // 加蘑菇
@@ -2419,9 +2828,10 @@
             // 添加到相册
             const albumItem = {
                 id: Date.now(),
-                destination: trip.destName,
+                destination: trip.postcard.name || trip.destName,
                 emoji: trip.destEmoji,
                 bg: trip.destBg,
+                image: trip.postcard.image,
                 text: trip.postcard.text,
                 date: new Date().toLocaleString('zh-CN', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
             };
@@ -2433,15 +2843,16 @@
             // 关闭弹窗
             el.postcardModal.classList.remove('active');
 
-            // 恢复首页
-            el.homePage.style.display = 'flex';
-            el.xiaoh.classList.remove('xiaoh-away');
+            // 恢复小狗显示
+            el.xiaoh.style.display = 'block';
             el.xiaoh.classList.add('xiaoh-idle');
-            xiaohIdleFrame = 0;
-            if (el.xiaohSpriteImg) el.xiaohSpriteImg.src = xiaohIdleFrameSrc(0);
             startXiaohIdleAnim();
+            
+            // 同时恢复庭院和屋子的探险按钮
             el.goBtn.disabled = false;
             el.goBtn.textContent = '🎒 出发探险';
+            el.roomGoBtn.disabled = false;
+            el.roomGoBtn.textContent = '🎒 出发探险';
 
             gameState.xiaohStatus = 'home';
             gameState.currentTrip = null;
@@ -2451,6 +2862,7 @@
 
         // 分享
         el.sharePostcard.addEventListener('click', () => {
+            playClickSound();
             const trip = gameState.currentTrip;
             const shareText = `【小H去哪儿】小H从${trip.destName}寄来明信片："${trip.postcard.text}" 🐕🍄`;
 
@@ -2479,6 +2891,7 @@
         let currentPage = 'home'; // 'home' or 'room'
         
         el.albumBtn.addEventListener('click', () => {
+            playClickSound();
             currentPage = 'home';
             renderAlbum();
             el.homePage.style.display = 'none';
@@ -2487,6 +2900,7 @@
         });
 
         el.roomAlbumBtn.addEventListener('click', () => {
+            playClickSound();
             currentPage = 'room';
             renderAlbum();
             el.roomPage.style.display = 'none';
@@ -2494,13 +2908,44 @@
         });
 
         el.albumBack.addEventListener('click', () => {
+            playClickSound();
             el.albumPage.style.display = 'none';
-            if (gameState.xiaohStatus === 'away') {
-                el.progressPage.style.display = 'flex';
-            } else if (currentPage === 'room') {
+            if (currentPage === 'room') {
+                // 从屋子进入相册，返回屋子
                 el.roomPage.style.display = 'block';
             } else {
+                // 从庭院进入相册（包括探险中），返回庭院
                 el.homePage.style.display = 'flex';
+                // 如果正在探险中，显示进度条
+                if (gameState.xiaohStatus === 'away') {
+                    el.homeProgress.style.display = 'block';
+                }
+            }
+        });
+
+        // 打开回收站
+        el.albumTrashBtn.addEventListener('click', () => {
+            playClickSound();
+            renderTrash();
+            el.trashModal.classList.add('active');
+        });
+
+        // 关闭回收站
+        el.trashClose.addEventListener('click', () => {
+            playClickSound();
+            el.trashModal.classList.remove('active');
+        });
+
+        // 清空回收站
+        el.trashClear.addEventListener('click', () => {
+            playClickSound();
+            if (gameState.trash.length === 0) return;
+            if (confirm('确定要清空回收站吗？清空后将无法恢复！')) {
+                gameState.trash = [];
+                updateTrashBtn();
+                saveGame();
+                renderTrash();
+                showFloatText(window.innerWidth / 2, window.innerHeight * 0.5, '回收站已清空 🗑️');
             }
         });
 
@@ -2519,9 +2964,10 @@
 
             el.albumGrid.innerHTML = gameState.album.map(item => `
                 <div class="album-item" data-id="${item.id}">
-                    <div class="album-item-img" style="background: ${item.bg}">
-                        <span style="font-size:50px">${item.emoji}</span>
+                    <div class="album-item-img">
+                        <img src="${item.image}" class="album-item-photo">
                         <span class="album-item-xiaoh">🐕</span>
+                        <button class="album-item-delete" data-id="${item.id}">🗑️</button>
                     </div>
                     <div class="album-item-info">
                         <div class="album-item-dest">${item.destination}</div>
@@ -2532,7 +2978,8 @@
 
             // 点击查看大图
             document.querySelectorAll('.album-item').forEach(item => {
-                item.addEventListener('click', () => {
+                item.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('album-item-delete')) return;
                     const id = parseInt(item.dataset.id);
                     const albumItem = gameState.album.find(a => a.id === id);
                     if (albumItem) {
@@ -2540,11 +2987,82 @@
                     }
                 });
             });
+
+            // 点击删除按钮
+            document.querySelectorAll('.album-item-delete').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    playClickSound();
+                    e.stopPropagation();
+                    const id = parseInt(btn.dataset.id);
+                    const albumItem = gameState.album.find(a => a.id === id);
+                    if (albumItem) {
+                        // 移到回收站
+                        gameState.album = gameState.album.filter(a => a.id !== id);
+                        gameState.trash.push(albumItem);
+                        updateTrashBtn();
+                        saveGame();
+                        renderAlbum();
+                        showFloatText(window.innerWidth / 2, window.innerHeight * 0.5, '已移到回收站 🗑️');
+                    }
+                });
+            });
+        }
+
+        // 更新回收站按钮状态
+        function updateTrashBtn() {
+            if (gameState.trash.length > 0) {
+                el.albumTrashBtn.classList.add('has-items');
+            } else {
+                el.albumTrashBtn.classList.remove('has-items');
+            }
+        }
+
+        // 渲染回收站
+        function renderTrash() {
+            if (gameState.trash.length === 0) {
+                el.trashGrid.innerHTML = `
+                    <div class="trash-empty">
+                        <div class="trash-empty-icon">🗑️</div>
+                        <div class="trash-empty-text">回收站是空的~</div>
+                    </div>
+                `;
+                return;
+            }
+
+            el.trashGrid.innerHTML = gameState.trash.map(item => `
+                <div class="trash-item" data-id="${item.id}">
+                    <div class="trash-item-img">
+                        <img src="${item.image}" class="trash-item-photo">
+                        <button class="trash-item-restore" data-id="${item.id}">↩️</button>
+                    </div>
+                    <div class="trash-item-info">
+                        <div>${item.destination}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            // 添加恢复按钮事件
+            document.querySelectorAll('.trash-item-restore').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    playClickSound();
+                    const id = parseInt(btn.dataset.id);
+                    const trashItem = gameState.trash.find(t => t.id === id);
+                    if (trashItem) {
+                        // 恢复到相册
+                        gameState.trash = gameState.trash.filter(t => t.id !== id);
+                        gameState.album.push(trashItem);
+                        updateTrashBtn();
+                        saveGame();
+                        renderTrash();
+                        renderAlbum();
+                        showFloatText(window.innerWidth / 2, window.innerHeight * 0.5, '已恢复 ✨');
+                    }
+                });
+            });
         }
 
         function showPhotoViewer(item) {
-            document.getElementById('viewer-bg').textContent = item.emoji;
-            document.getElementById('viewer-img').style.background = item.bg;
+            document.getElementById('viewer-photo').src = item.image;
             document.getElementById('viewer-text').textContent = item.text;
             el.photoViewer.classList.add('active');
         }
@@ -2558,6 +3076,7 @@
             localStorage.setItem('xiaoh_game', JSON.stringify({
                 mushrooms: gameState.mushrooms,
                 album: gameState.album,
+                trash: gameState.trash,
                 inventory: gameState.inventory
             }));
         }
@@ -2566,8 +3085,10 @@
             const saved = localStorage.getItem('xiaoh_game');
             if (saved) {
                 const data = JSON.parse(saved);
-                gameState.mushrooms = data.mushrooms || data.bones || 20;
+                // 确保蘑菇币是数字类型
+                gameState.mushrooms = parseInt(data.mushrooms || data.bones || 20, 10) || 20;
                 gameState.album = data.album || [];
+                gameState.trash = data.trash || [];
                 gameState.inventory = data.inventory || {
                     bone: 0,
                     meat: 0,
@@ -2656,6 +3177,7 @@
 
         // ==================== 初始化 ====================
         loadGame();
+        updateTrashBtn();
         startMushroomSpawning();
         setBackgroundByTime();
         initBGM();
