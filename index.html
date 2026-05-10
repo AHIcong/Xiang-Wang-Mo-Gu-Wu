@@ -1423,10 +1423,11 @@
         
         #interact-xiaoh {
             position: relative;
+            left: 0;
             display: flex;
             align-items: flex-end;
             justify-content: center;
-            transition: all 0.3s ease;
+            transition: left 0.1s linear;
         }
         
         #interact-xiaoh-img {
@@ -2350,15 +2351,14 @@
         function wakeUpXiaoh() {
             stopXiaohLaydownAnim();
             stopXiaohSleepIdleAnim();
-            
-            // 移除睡觉样式
+
             if (el.xiaoh) {
                 el.xiaoh.classList.remove('xiaoh-sleeping');
             }
             if (el.xiaohCharacterRoom) {
                 el.xiaohCharacterRoom.classList.remove('xiaoh-sleeping');
             }
-            
+
             currentXiaohState = 'idle';
             xiaohIdleFrame = 0;
             if (el.xiaohSpriteImg) {
@@ -2370,19 +2370,141 @@
             startXiaohIdleAnim();
         }
 
+        // ==================== 互动界面序列帧动画 ====================
+        const XIAOH_EAT_FRAMES = 22;
+        const XIAOH_EAT_MS = 80;
+        let xiaohEatTimer = null;
+        let xiaohEatFrame = 0;
+
+        function xiaohEatFrameSrc(index) {
+            const n = String(index + 1).padStart(3, '0');
+            return 'assets/低头吃东西/' + n + '.png';
+        }
+
+        function startXiaohEatAnim() {
+            if (xiaohEatTimer) return;
+            stopInteractXiaohIdleAnim();
+            xiaohEatFrame = 0;
+            xiaohEatTimer = setInterval(() => {
+                if (xiaohEatFrame >= XIAOH_EAT_FRAMES - 1) {
+                    stopXiaohEatAnim();
+                    startInteractXiaohIdleAnim();
+                    return;
+                }
+                xiaohEatFrame++;
+                const img = document.getElementById('interact-xiaoh-img');
+                if (img) img.src = xiaohEatFrameSrc(xiaohEatFrame);
+            }, XIAOH_EAT_MS);
+        }
+
+        function stopXiaohEatAnim() {
+            if (xiaohEatTimer) {
+                clearInterval(xiaohEatTimer);
+                xiaohEatTimer = null;
+            }
+        }
+
+        const XIAOH_HAPPY_FRAMES = 25;
+        const XIAOH_HAPPY_MS = 70;
+        let xiaohHappyTimer = null;
+        let xiaohHappyFrame = 0;
+
+        function xiaohHappyFrameSrc(index) {
+            const n = String(index + 1).padStart(3, '0');
+            return 'assets/开心/' + n + '.png';
+        }
+
+        function startXiaohHappyAnim() {
+            if (xiaohHappyTimer) return;
+            stopInteractXiaohIdleAnim();
+            xiaohHappyFrame = 0;
+            xiaohHappyTimer = setInterval(() => {
+                if (xiaohHappyFrame >= XIAOH_HAPPY_FRAMES - 1) {
+                    stopXiaohHappyAnim();
+                    startInteractXiaohIdleAnim();
+                    return;
+                }
+                xiaohHappyFrame++;
+                const img = document.getElementById('interact-xiaoh-img');
+                if (img) img.src = xiaohHappyFrameSrc(xiaohHappyFrame);
+            }, XIAOH_HAPPY_MS);
+        }
+
+        function stopXiaohHappyAnim() {
+            if (xiaohHappyTimer) {
+                clearInterval(xiaohHappyTimer);
+                xiaohHappyTimer = null;
+            }
+        }
+
+        const XIAOH_RUN_LEFT_FRAMES = 6;
+        const XIAOH_RUN_RIGHT_FRAMES = 7;
+        const XIAOH_RUN_MS = 100;
+        let xiaohRunTimer = null;
+        let xiaohRunFrame = 0;
+        let xiaohRunDirection = 1;
+        let xiaohRunPosition = 0;
+
+        function xiaohRunLeftFrameSrc(index) {
+            const n = String(index + 1).padStart(3, '0');
+            return 'assets/向左跑/' + n + '.png';
+        }
+
+        function xiaohRunRightFrameSrc(index) {
+            const n = String(index + 1).padStart(3, '0');
+            return 'assets/向右跑/' + n + '.png';
+        }
+
+        function startXiaohRunAnim(direction) {
+            if (xiaohRunTimer) return;
+            stopInteractXiaohIdleAnim();
+            xiaohRunFrame = 0;
+            xiaohRunDirection = direction;
+            xiaohRunTimer = setInterval(() => {
+                xiaohRunFrame = (xiaohRunFrame + 1) % (direction === 1 ? XIAOH_RUN_RIGHT_FRAMES : XIAOH_RUN_LEFT_FRAMES);
+                const img = document.getElementById('interact-xiaoh-img');
+                if (img) {
+                    img.src = direction === 1 ? xiaohRunRightFrameSrc(xiaohRunFrame) : xiaohRunLeftFrameSrc(xiaohRunFrame);
+                }
+
+                const container = document.querySelector('.interact-xiaoh-container');
+                if (container && el.interactXiaoh) {
+                    const containerWidth = container.offsetWidth;
+                    const characterWidth = el.interactXiaoh.offsetWidth || 150;
+                    const maxMove = (containerWidth - characterWidth) / 2 - 20;
+
+                    xiaohRunPosition += direction * 5;
+                    xiaohRunPosition = Math.max(-maxMove, Math.min(maxMove, xiaohRunPosition));
+                    el.interactXiaoh.style.left = `${xiaohRunPosition}px`;
+                }
+            }, XIAOH_RUN_MS);
+        }
+
+        function stopXiaohRunAnim() {
+            if (xiaohRunTimer) {
+                clearInterval(xiaohRunTimer);
+                xiaohRunTimer = null;
+            }
+        }
+
+        function resetXiaohRunPosition() {
+            xiaohRunPosition = 0;
+            if (el.interactXiaoh) {
+                el.interactXiaoh.style.left = '0px';
+            }
+        }
+
         // 检查是否应该睡觉（夜晚房间）
         function checkSleepCondition() {
             const roomPage = document.getElementById('room-page');
             const isInRoom = roomPage && roomPage.classList.contains('active');
             const isNight = roomPage && roomPage.classList.contains('night');
-            
+
             if (isInRoom && isNight && gameState.xiaohStatus === 'home') {
-                // 夜晚在房间里，且小H在家，触发睡觉
                 if (currentXiaohState !== 'sleep_idle' && currentXiaohState !== 'laydown') {
                     startXiaohLaydownAnim();
                 }
             } else {
-                // 不在夜晚房间，唤醒小H
                 if (currentXiaohState === 'sleep_idle' || currentXiaohState === 'laydown') {
                     wakeUpXiaoh();
                 }
@@ -3304,13 +3426,18 @@
         });
 
         function animateXiaoh(action) {
-            el.interactXiaoh.classList.remove('action-feed', 'action-pet', 'action-play');
-            setTimeout(() => {
-                el.interactXiaoh.classList.add(`action-${action}`);
+            if (action === 'feed') {
+                startXiaohEatAnim();
+            } else if (action === 'pet') {
+                startXiaohHappyAnim();
+            } else if (action === 'play') {
+                const direction = Math.random() < 0.5 ? -1 : 1;
+                startXiaohRunAnim(direction);
                 setTimeout(() => {
-                    el.interactXiaoh.classList.remove(`action-${action}`);
-                }, 600);
-            }, 50);
+                    stopXiaohRunAnim();
+                    startInteractXiaohIdleAnim();
+                }, 1500);
+            }
         }
 
         function addDiary(action, content) {
