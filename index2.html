@@ -47,33 +47,6 @@
             background-image: url('assets/背景/garden-night.png');
         }
 
-        /* 天空和云朵 */
-        .cloud {
-            position: absolute;
-            background: white;
-            border-radius: 50px;
-            opacity: 0.8;
-            animation: float 20s infinite linear;
-        }
-        .cloud::before, .cloud::after {
-            content: '';
-            position: absolute;
-            background: white;
-            border-radius: 50%;
-        }
-        .cloud1 { width: 80px; height: 30px; top: 8%; left: 10%; }
-        .cloud1::before { width: 40px; height: 40px; top: -20px; left: 10px; }
-        .cloud1::after { width: 50px; height: 35px; top: -15px; left: 30px; }
-
-        .cloud2 { width: 60px; height: 25px; top: 15%; left: 60%; animation-delay: -10s; }
-        .cloud2::before { width: 35px; height: 35px; top: -18px; left: 8px; }
-        .cloud2::after { width: 40px; height: 30px; top: -12px; left: 25px; }
-
-        @keyframes float {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(430px); }
-        }
-
         /* 蘑菇币数量显示 */
         #mushroom-counter {
             position: absolute;
@@ -255,17 +228,27 @@
             cursor: pointer;
             z-index: 50;
             transition: transform 0.3s ease;
+            object-fit: contain;
         }
-        .mushroom:hover {
+        .mushroom.spawning {
+            cursor: default;
+            pointer-events: none;
+        }
+        .mushroom.spawning:hover {
+            transform: none;
+        }
+        .mushroom:hover:not(.spawning) {
             transform: scale(1.1);
         }
         .mushroom.small {
-            width: 40px;
-            height: 40px;
-        }
-        .mushroom.large {
+            /* border:#43A047 solid 2px; */
             width: 60px;
             height: 60px;
+        }
+        .mushroom.large {
+            /* border:#00597c solid 2px; */
+            width: 100px;
+            height: 100px;
         }
         .mushroom.growing {
             animation: mushroom-grow 0.5s ease-out forwards;
@@ -325,7 +308,7 @@
         #xiaoh-character-room {
             position: absolute;
             bottom: 22%;
-            left: 50%;
+            left: 40%;
             transform: translateX(-50%);
             width: auto;
             height: auto;
@@ -1127,13 +1110,6 @@
             height: 100%;
             object-fit: cover;
         }
-        .postcard-xiaoh {
-            position: absolute;
-            font-size: 60px;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-        }
         .postcard-content {
             padding: 20px;
         }
@@ -1276,15 +1252,6 @@
             object-fit: contain;
             background: #fff;
         }
-        .album-item-xiaoh {
-            position: absolute;
-            font-size: 35px;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 5;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
-        }
         .album-item-delete {
             position: absolute;
             top: 5px;
@@ -1365,11 +1332,6 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-        }
-        .viewer-xiaoh {
-            position: absolute;
-            font-size: 60px;
-            bottom: 30px;
         }
         .viewer-text {
             color: white;
@@ -1622,10 +1584,6 @@
     <div id="game-container">
         <!-- 首页 -->
         <div id="home-page" class="day">
-            <!-- 云朵 -->
-            <div class="cloud cloud1"></div>
-            <div class="cloud cloud2"></div>
-
             <!-- UI -->
             <button id="day-night-toggle">☀️ 切换夜晚</button>
             <button id="settings-btn">⚙️ 设置</button>
@@ -1799,7 +1757,6 @@
                 <div class="postcard-header">📮 小H寄来明信片！</div>
                 <div class="postcard-image" id="postcard-img">
                     <img id="postcard-bg-image" src="" class="postcard-bg">
-                    <span class="postcard-xiaoh">🐕</span>
                 </div>
                 <div class="postcard-content">
                     <div class="postcard-text" id="postcard-text">今天的田野好大，跑了好久~</div>
@@ -1899,7 +1856,6 @@
         <div class="photo-viewer" id="photo-viewer">
             <div class="viewer-image" id="viewer-img">
                 <img id="viewer-photo" src="" class="viewer-photo">
-                <span class="viewer-xiaoh">🐕</span>
             </div>
             <div class="viewer-text" id="viewer-text">今天的田野好大，跑了好久~</div>
             <div class="viewer-close" id="viewer-close">✕</div>
@@ -2443,6 +2399,13 @@
             { name: 'tinyShroom_tan', size: 'small' }
         ];
 
+        const MUSHROOM_GROWTH_FRAME_COUNT = 15;
+        const MUSHROOM_GROWTH_FRAME_MS = 70;
+
+        function mushroomGrowthFrameSrc(frame) {
+            return `assets/蘑菇生长/${String(frame).padStart(3, '0')}.png`;
+        }
+
         let mushroomSpawnInterval;
         let mushroomIdCounter = 0;
 
@@ -2482,7 +2445,8 @@
                 type: mushroomType.name,
                 size: mushroomType.size,
                 x: x,
-                y: y
+                y: y,
+                ready: false
             };
 
             gameState.mushroomsOnGround.push(mushroom);
@@ -2504,24 +2468,47 @@
 
         function renderMushroom(mushroom) {
             const mushroomEl = document.createElement('img');
-            mushroomEl.className = `mushroom ${mushroom.size}`;
-            let imgPath = `assets/${mushroom.type}.png`;
-            if (mushroom.type.includes('Shroom')) {
-                imgPath = `assets/蘑菇/${mushroom.type}.png`;
-            }
-            mushroomEl.src = imgPath;
+            mushroomEl.className = `mushroom ${mushroom.size} spawning`;
+            mushroomEl.src = mushroomGrowthFrameSrc(1);
             mushroomEl.style.left = mushroom.x + 'px';
             mushroomEl.style.bottom = (350 - mushroom.y) + 'px';
             mushroomEl.dataset.id = mushroom.id;
 
-            mushroomEl.addEventListener('click', () => {
-                collectMushroom(mushroomEl, mushroom);
-            });
+            function mushroomStillInState() {
+                return gameState.mushroomsOnGround.some(m => m.id === mushroom.id);
+            }
+
+            function finishMushroomGrowth() {
+                if (!mushroomStillInState() || !mushroomEl.isConnected) return;
+                mushroomEl.src = mushroomGrowthFrameSrc(MUSHROOM_GROWTH_FRAME_COUNT);
+                mushroomEl.classList.remove('spawning');
+                mushroom.ready = true;
+                mushroomEl.addEventListener('click', () => {
+                    collectMushroom(mushroomEl, mushroom);
+                });
+            }
+
+            let growthFrame = 1;
+            const growthTimer = setInterval(() => {
+                if (!mushroomStillInState() || !mushroomEl.isConnected) {
+                    clearInterval(growthTimer);
+                    return;
+                }
+                growthFrame++;
+                if (growthFrame <= MUSHROOM_GROWTH_FRAME_COUNT) {
+                    mushroomEl.src = mushroomGrowthFrameSrc(growthFrame);
+                } else {
+                    clearInterval(growthTimer);
+                    finishMushroomGrowth();
+                }
+            }, MUSHROOM_GROWTH_FRAME_MS);
 
             el.ground.appendChild(mushroomEl);
         }
 
         function collectMushroom(elMushroom, mushroom) {
+            if (!mushroom.ready) return;
+
             // 播放采蘑菇音效
             playPickSound();
 
@@ -3427,7 +3414,6 @@
                 <div class="album-item" data-id="${item.id}">
                     <div class="album-item-img">
                         <img src="${item.image}" class="album-item-photo">
-                        <span class="album-item-xiaoh">🐕</span>
                         <button class="album-item-delete" data-id="${item.id}">🗑️</button>
                     </div>
                     <div class="album-item-info">
