@@ -1391,6 +1391,230 @@
             border-radius: 50%;
         }
 
+        /* ========== 互动界面样式 ========== */
+        #interact-page {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, #FFF8E7 0%, #FFE4E1 100%);
+            display: flex;
+            flex-direction: column;
+            z-index: 200;
+        }
+        
+        .interact-header {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        }
+        
+        .interact-back {
+            font-size: 28px;
+            cursor: pointer;
+            padding: 8px 12px;
+            margin-right: 15px;
+            color: #FF6B6B;
+            transition: transform 0.2s;
+        }
+        
+        .interact-back:active {
+            transform: scale(0.9);
+        }
+        
+        .interact-title {
+            flex: 1;
+            font-size: 20px;
+            font-weight: bold;
+            color: #5D3A1A;
+        }
+        
+        .intimacy-display {
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, #FFB6C1 0%, #FF69B4 100%);
+            padding: 8px 15px;
+            border-radius: 25px;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            box-shadow: 0 3px 10px rgba(255, 105, 180, 0.3);
+        }
+        
+        .intimacy-display span:first-child {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+        
+        /* 小狗展示区域 */
+        .interact-xiaoh-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+        }
+        
+        #interact-xiaoh {
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        #interact-xiaoh-img {
+            height: 150px;
+            width: auto;
+            max-width: 180px;
+            object-fit: contain;
+            pointer-events: none;
+            user-select: none;
+            -webkit-user-drag: none;
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.15));
+        }
+        
+        /* 交互选项 */
+        .interact-actions {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 25px 20px;
+            background: rgba(255, 255, 255, 0.85);
+        }
+        
+        .action-btn {
+            width: 100px;
+            height: 55px;
+            border: none;
+            border-radius: 18px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        
+        #action-feed {
+            background: linear-gradient(180deg, #FFB347 0%, #FF8C00 100%);
+            color: white;
+        }
+        
+        #action-pet {
+            background: linear-gradient(180deg, #FFB6C1 0%, #FF69B4 100%);
+            color: white;
+        }
+        
+        #action-play {
+            background: linear-gradient(180deg, #87CEEB 0%, #4169E1 100%);
+            color: white;
+        }
+        
+        .action-btn:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        /* 互动动画 */
+        #interact-xiaoh.action-feed {
+            animation: interact-eating 0.6s ease-in-out;
+        }
+        
+        #interact-xiaoh.action-pet {
+            animation: interact-happy 0.5s ease-in-out;
+        }
+        
+        #interact-xiaoh.action-play {
+            animation: interact-playful 0.6s ease-in-out;
+        }
+        
+        @keyframes interact-eating {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.05) rotate(-3deg); }
+            50% { transform: scale(1.08); }
+            75% { transform: scale(1.05) rotate(3deg); }
+        }
+        
+        @keyframes interact-happy {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+        
+        @keyframes interact-playful {
+            0%, 100% { transform: rotate(0deg) translateX(0); }
+            25% { transform: rotate(10deg) translateX(10px); }
+            75% { transform: rotate(-10deg) translateX(-10px); }
+        }
+        
+        /* 日记区域 */
+        .diary-section {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.9);
+            margin: 0 15px 15px;
+            border-radius: 20px;
+            padding: 20px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.08);
+        }
+        
+        .diary-header {
+            font-size: 18px;
+            font-weight: bold;
+            color: #5D3A1A;
+            margin-bottom: 15px;
+            padding-bottom: 12px;
+            border-bottom: 3px solid #FFE4E1;
+        }
+        
+        .diary-list {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .diary-empty {
+            text-align: center;
+            color: #999;
+            padding: 40px 20px;
+            font-size: 15px;
+        }
+        
+        .diary-item {
+            background: linear-gradient(135deg, #FFF8E7 0%, #FFF 100%);
+            padding: 15px;
+            border-radius: 12px;
+            border-left: 5px solid #FFB6C1;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+        
+        .diary-date {
+            font-size: 13px;
+            color: #999;
+            margin-bottom: 8px;
+        }
+        
+        .diary-content {
+            font-size: 15px;
+            color: #5D3A1A;
+            line-height: 1.6;
+        }
+        
+        .diary-emoji {
+            font-size: 18px;
+            margin-right: 6px;
+        }
         
     </style>
 </head>
@@ -1440,6 +1664,42 @@
         <div id="home-progress" style="display: none;">
             <div class="simple-progress-bar">
                 <div class="simple-progress-fill" id="home-progress-bar"></div>
+            </div>
+        </div>
+
+        <!-- 互动界面 -->
+        <div id="interact-page" style="display: none;">
+            <div class="interact-header">
+                <div class="interact-back" id="interact-back">←</div>
+                <div class="interact-title">🐕 小H的日常</div>
+                <div class="intimacy-display">
+                    <span>💕</span>
+                    <span id="intimacy-value">0</span>
+                </div>
+            </div>
+            
+            <!-- 小狗展示区域 -->
+            <div class="interact-xiaoh-container">
+                <div id="interact-xiaoh" class="xiaoh-idle">
+                    <img class="xiaoh-sprite-img" id="interact-xiaoh-img" src="assets/待机/001.png" alt="" draggable="false" />
+                </div>
+            </div>
+            
+            <!-- 交互选项 -->
+            <div class="interact-actions">
+                <button class="action-btn" id="action-feed">🍖 喂食</button>
+                <button class="action-btn" id="action-pet">✋ 摸摸</button>
+                <button class="action-btn" id="action-play">🎾 玩耍</button>
+            </div>
+            
+            <!-- 心情日记 -->
+            <div class="diary-section">
+                <div class="diary-header">
+                    <span>📔 心情日记</span>
+                </div>
+                <div class="diary-list" id="diary-list">
+                    <div class="diary-empty">还没有日记哦~ 快来和小H互动吧！</div>
+                </div>
             </div>
         </div>
 
@@ -1707,6 +1967,8 @@
             progressInterval: null,
             selectedItem: null,
             mushroomsOnGround: [],
+            intimacy: 0, // 亲密度
+            diary: [], // 心情日记
             inventory: {
                 bone: 0,
                 meat: 0,
@@ -1834,6 +2096,19 @@
             }
         }
         
+        // 播放开门音效
+        function playDoorSound() {
+            if (!soundEnabled) return;
+            
+            try {
+                const audio = new Audio('assets/door-open.mp3');
+                audio.volume = 0.5;
+                audio.play().catch(() => {});
+            } catch (e) {
+                console.log('开门音效播放失败:', e);
+            }
+        }
+
         function playClickSound() {
             if (!soundEnabled) return;
             
@@ -1925,7 +2200,16 @@
             inventoryItems: document.getElementById('inventory-items'),
             inventoryClose: document.getElementById('inventory-close'),
             confirmItem: document.getElementById('confirm-item'),
-            goToShop: document.getElementById('go-to-shop')
+            goToShop: document.getElementById('go-to-shop'),
+            // 互动界面相关
+            interactPage: document.getElementById('interact-page'),
+            interactBack: document.getElementById('interact-back'),
+            intimacyValue: document.getElementById('intimacy-value'),
+            actionFeed: document.getElementById('action-feed'),
+            actionPet: document.getElementById('action-pet'),
+            actionPlay: document.getElementById('action-play'),
+            interactXiaoh: document.getElementById('interact-xiaoh'),
+            diaryList: document.getElementById('diary-list')
         };
 
         // ==================== 工具函数 ====================
@@ -1979,6 +2263,28 @@
             if (xiaohIdleTimer) {
                 clearInterval(xiaohIdleTimer);
                 xiaohIdleTimer = null;
+            }
+        }
+
+        // 互动页面小狗待机动画
+        let interactXiaohIdleTimer = null;
+        
+        function startInteractXiaohIdleAnim() {
+            if (interactXiaohIdleTimer) return;
+            let frame = 0;
+            interactXiaohIdleTimer = setInterval(() => {
+                frame = (frame + 1) % XIAOH_IDLE_FRAMES;
+                const src = xiaohIdleFrameSrc(frame);
+                if (document.getElementById('interact-xiaoh-img')) {
+                    document.getElementById('interact-xiaoh-img').src = src;
+                }
+            }, XIAOH_IDLE_MS);
+        }
+
+        function stopInteractXiaohIdleAnim() {
+            if (interactXiaohIdleTimer) {
+                clearInterval(interactXiaohIdleTimer);
+                interactXiaohIdleTimer = null;
             }
         }
 
@@ -2761,8 +3067,9 @@
             el.roomGoBtn.disabled = true;
             el.roomGoBtn.textContent = '已出发';
 
-            // 隐藏小狗
+            // 隐藏小狗（庭院和屋子内的都隐藏）
             el.xiaoh.style.display = 'none';
+            el.xiaohCharacterRoom.style.display = 'none';
 
             // 显示底部进度条
             el.homeProgress.style.display = 'block';
@@ -2843,9 +3150,11 @@
             // 关闭弹窗
             el.postcardModal.classList.remove('active');
 
-            // 恢复小狗显示
+            // 恢复小狗显示（庭院和屋子内的都显示）
             el.xiaoh.style.display = 'block';
             el.xiaoh.classList.add('xiaoh-idle');
+            el.xiaohCharacterRoom.style.display = 'block';
+            el.xiaohCharacterRoom.classList.add('xiaoh-idle');
             startXiaohIdleAnim();
             
             // 同时恢复庭院和屋子的探险按钮
@@ -2906,6 +3215,158 @@
             el.roomPage.style.display = 'none';
             el.albumPage.style.display = 'flex';
         });
+
+        // ==================== 互动界面 ====================
+        // 点击庭院小狗进入互动界面
+        el.xiaoh.addEventListener('click', () => {
+            if (gameState.xiaohStatus !== 'home') return;
+            // 如果正在睡觉，不进入交互页面
+            if (el.xiaoh.classList.contains('xiaoh-sleeping')) return;
+            openInteractPage('home');
+        });
+
+        // 点击屋子小狗进入互动界面
+        el.xiaohCharacterRoom.addEventListener('click', () => {
+            if (gameState.xiaohStatus !== 'home') return;
+            // 如果正在睡觉，不进入交互页面
+            if (el.xiaohCharacterRoom.classList.contains('xiaoh-sleeping')) return;
+            openInteractPage('room');
+        });
+
+        function openInteractPage(fromPage) {
+            playClickSound();
+            currentPage = fromPage;
+            renderDiary();
+            updateIntimacyDisplay();
+            el.homePage.style.display = 'none';
+            el.roomPage.style.display = 'none';
+            el.interactPage.style.display = 'flex';
+            // 启动小狗待机动画
+            startInteractXiaohIdleAnim();
+        }
+
+        // 返回按钮
+        el.interactBack.addEventListener('click', () => {
+            playClickSound();
+            el.interactPage.style.display = 'none';
+            // 停止互动页面小狗动画
+            stopInteractXiaohIdleAnim();
+            if (currentPage === 'room') {
+                el.roomPage.style.display = 'block';
+            } else {
+                el.homePage.style.display = 'flex';
+            }
+        });
+
+        // 喂食
+        el.actionFeed.addEventListener('click', () => {
+            playClickSound();
+            // 检查是否有食物
+            const hasFood = gameState.inventory.bone > 0 || 
+                           gameState.inventory.meat > 0 || 
+                           gameState.inventory.steak > 0 || 
+                           gameState.inventory.sushi > 0;
+            
+            if (!hasFood) {
+                addDiary('feed', '今天主人没有给我准备食物...有点饿呢 😢');
+                return;
+            }
+            
+            // 使用食物（优先使用高级食物）
+            if (gameState.inventory.sushi > 0) {
+                gameState.inventory.sushi--;
+                gameState.intimacy += 5;
+                addDiary('feed', '今天吃到了美味的寿司！超级满足！🍣 心情值+5');
+            } else if (gameState.inventory.steak > 0) {
+                gameState.inventory.steak--;
+                gameState.intimacy += 4;
+                addDiary('feed', '鲜嫩的牛排！好好吃！🥩 心情值+4');
+            } else if (gameState.inventory.meat > 0) {
+                gameState.inventory.meat--;
+                gameState.intimacy += 3;
+                addDiary('feed', '香喷喷的肉干！谢谢主人！🍖 心情值+3');
+            } else if (gameState.inventory.bone > 0) {
+                gameState.inventory.bone--;
+                gameState.intimacy += 2;
+                addDiary('feed', '啃骨头真开心！🦴 心情值+2');
+            }
+            
+            updateIntimacyDisplay();
+            animateXiaoh('feed');
+            saveGame();
+        });
+
+        // 摸摸
+        el.actionPet.addEventListener('click', () => {
+            playClickSound();
+            gameState.intimacy += 2;
+            addDiary('pet', '主人摸了摸我的头，好舒服呀~ 🥰 心情值+2');
+            updateIntimacyDisplay();
+            animateXiaoh('pet');
+            saveGame();
+        });
+
+        // 玩耍
+        el.actionPlay.addEventListener('click', () => {
+            playClickSound();
+            gameState.intimacy += 3;
+            addDiary('play', '和主人一起玩耍真开心！我们玩了接球游戏！🎾 心情值+3');
+            updateIntimacyDisplay();
+            animateXiaoh('play');
+            saveGame();
+        });
+
+        function animateXiaoh(action) {
+            el.interactXiaoh.classList.remove('action-feed', 'action-pet', 'action-play');
+            setTimeout(() => {
+                el.interactXiaoh.classList.add(`action-${action}`);
+                setTimeout(() => {
+                    el.interactXiaoh.classList.remove(`action-${action}`);
+                }, 600);
+            }, 50);
+        }
+
+        function addDiary(action, content) {
+            const now = new Date();
+            const timeStr = now.toLocaleString('zh-CN', {
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            
+            gameState.diary.unshift({
+                id: Date.now(),
+                action: action,
+                content: content,
+                date: timeStr
+            });
+            
+            // 最多保留50条日记
+            if (gameState.diary.length > 50) {
+                gameState.diary = gameState.diary.slice(0, 50);
+            }
+            
+            renderDiary();
+        }
+
+        function renderDiary() {
+            if (gameState.diary.length === 0) {
+                el.diaryList.innerHTML = '<div class="diary-empty">还没有日记哦~ 快来和小H互动吧！</div>';
+                return;
+            }
+            
+            el.diaryList.innerHTML = gameState.diary.map(item => `
+                <div class="diary-item">
+                    <div class="diary-date">${item.date}</div>
+                    <div class="diary-content">${item.content}</div>
+                </div>
+            `).join('');
+        }
+
+        function updateIntimacyDisplay() {
+            el.intimacyValue.textContent = gameState.intimacy;
+        }
 
         el.albumBack.addEventListener('click', () => {
             playClickSound();
@@ -3077,7 +3538,9 @@
                 mushrooms: gameState.mushrooms,
                 album: gameState.album,
                 trash: gameState.trash,
-                inventory: gameState.inventory
+                inventory: gameState.inventory,
+                intimacy: gameState.intimacy,
+                diary: gameState.diary
             }));
         }
 
@@ -3099,6 +3562,8 @@
                     ball: 0,
                     camera: 0
                 };
+                gameState.intimacy = parseInt(data.intimacy || 0, 10) || 0;
+                gameState.diary = data.diary || [];
                 updateMushroomDisplay();
             }
         }
@@ -3142,6 +3607,7 @@
 
         // 门按钮点击事件 - 进入室内场景
         el.doorBtn.addEventListener('click', () => {
+            playDoorSound();
             updateRoomBackground();
             updateRoomMushroomDisplay();
             el.roomPage.classList.add('active');
