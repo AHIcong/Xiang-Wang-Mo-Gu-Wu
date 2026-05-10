@@ -1578,10 +1578,108 @@
             font-size: 18px;
             margin-right: 6px;
         }
-        
+
+        /* ==================== 加载界面 ==================== */
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #87CEEB 0%, #98D8C8 50%, #F7DC6F 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.8s ease-out;
+        }
+
+        #loading-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loading-content {
+            text-align: center;
+        }
+
+        .loading-title {
+            font-size: 36px;
+            font-weight: bold;
+            color: #5D3A1A;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(255,255,255,0.5);
+        }
+
+        .loading-xiaoh {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 30px;
+            animation: loading-bounce 1s ease-in-out infinite;
+        }
+
+        .loading-xiaoh img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        @keyframes loading-bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .loading-bar-container {
+            width: 280px;
+            height: 20px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 0 auto 15px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .loading-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #FFB347, #FF8C00);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .loading-text {
+            font-size: 14px;
+            color: #5D3A1A;
+            opacity: 0.8;
+        }
+
+        .loading-tip {
+            position: absolute;
+            bottom: 40px;
+            font-size: 12px;
+            color: #5D3A1A;
+            opacity: 0.6;
+        }
+
     </style>
 </head>
 <body>
+    <!-- 加载界面 -->
+    <div id="loading-screen">
+        <div class="loading-content">
+            <div class="loading-title">🐕 小H去哪儿</div>
+            <div class="loading-xiaoh">
+                <img id="loading-xiaoh-img" src="assets/待机/001.png" alt="小H">
+            </div>
+            <div class="loading-bar-container">
+                <div class="loading-bar" id="loading-bar"></div>
+            </div>
+            <div class="loading-text" id="loading-text">正在加载资源...</div>
+        </div>
+        <div class="loading-tip">首次加载可能需要较长时间，请耐心等待~</div>
+    </div>
+
     <div id="game-container">
         <!-- 首页 -->
         <div id="home-page" class="day">
@@ -3754,13 +3852,128 @@
             }, 5 * 60 * 1000);
         });
 
-        // ==================== 初始化 ====================
-        loadGame();
-        updateTrashBtn();
-        startMushroomSpawning();
-        setBackgroundByTime();
-        initBGM();
-        startXiaohIdleAnim();
+        // ==================== 资源预加载系统 ====================
+        const LOADING_TIMEOUT = 15000;
+
+        const preloadResources = [
+            'assets/背景/garden-day.png',
+            'assets/背景/garden-night.png',
+            'assets/待机/001.png',
+            'assets/待机/002.png',
+            'assets/待机/003.png',
+            'assets/待机/004.png',
+            'assets/待机/005.png',
+            'assets/待机/006.png',
+            'assets/待机/007.png',
+            'assets/待机/008.png',
+            'assets/组件/白天门.png',
+            'assets/组件/晚上的门.png'
+        ];
+
+        const preloadXiahFrames = [];
+        for (let i = 1; i <= 22; i++) {
+            preloadXiahFrames.push(`assets/待机/${String(i).padStart(3, '0')}.png`);
+        }
+        for (let i = 1; i <= 22; i++) {
+            preloadXiahFrames.push(`assets/低头吃东西/${String(i).padStart(3, '0')}.png`);
+        }
+        for (let i = 1; i <= 25; i++) {
+            preloadXiahFrames.push(`assets/开心/${String(i).padStart(3, '0')}.png`);
+        }
+
+        let loadedCount = 0;
+        let isGameReady = false;
+
+        function updateLoadingProgress(percent, text) {
+            const loadingBar = document.getElementById('loading-bar');
+            const loadingText = document.getElementById('loading-text');
+            if (loadingBar) loadingBar.style.width = percent + '%';
+            if (loadingText) loadingText.textContent = text;
+        }
+
+        function hideLoadingScreen() {
+            const loadingScreen = document.getElementById('loading-screen');
+            if (loadingScreen) {
+                loadingScreen.classList.add('hidden');
+                setTimeout(() => {
+                    loadingScreen.style.display = 'none';
+                }, 800);
+            }
+        }
+
+        function startGameInitialization() {
+            if (isGameReady) return;
+            isGameReady = true;
+
+            loadGame();
+            updateTrashBtn();
+            startMushroomSpawning();
+            setBackgroundByTime();
+            initBGM();
+            startXiaohIdleAnim();
+
+            setTimeout(hideLoadingScreen, 300);
+        }
+
+        function preloadImage(src) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = () => {
+                    loadedCount++;
+                    resolve(true);
+                };
+                img.onerror = () => {
+                    loadedCount++;
+                    resolve(false);
+                };
+                img.src = src;
+            });
+        }
+
+        async function initPreload() {
+            const totalResources = preloadResources.length + preloadXiahFrames.length;
+            updateLoadingProgress(5, '正在加载背景资源...');
+
+            for (let i = 0; i < preloadResources.length; i++) {
+                await preloadImage(preloadResources[i]);
+                const percent = Math.floor((loadedCount / totalResources) * 80) + 5;
+                updateLoadingProgress(percent, `正在加载资源... ${loadedCount}/${totalResources}`);
+            }
+
+            updateLoadingProgress(85, '正在加载角色动画...');
+
+            const loadingImg = document.getElementById('loading-xiaoh-img');
+            let frameIndex = 0;
+
+            function animateLoadingSprite() {
+                if (!isGameReady) {
+                    frameIndex = (frameIndex + 1) % 8;
+                    if (loadingImg) {
+                        loadingImg.src = `assets/待机/${String(frameIndex + 1).padStart(3, '0')}.png`;
+                    }
+                    setTimeout(animateLoadingSprite, 150);
+                }
+            }
+            animateLoadingSprite();
+
+            for (let i = 0; i < preloadXiahFrames.length; i++) {
+                await preloadImage(preloadXiahFrames[i]);
+                const percent = Math.floor(85 + (loadedCount / totalResources) * 10);
+                updateLoadingProgress(percent, `正在加载动画帧... ${loadedCount}/${totalResources}`);
+            }
+
+            updateLoadingProgress(98, '即将开始游戏...');
+            setTimeout(startGameInitialization, 200);
+        }
+
+        setTimeout(() => {
+            if (!isGameReady) {
+                updateLoadingProgress(100, '加载完成！');
+                setTimeout(startGameInitialization, 500);
+            }
+        }, LOADING_TIMEOUT);
+
+        initPreload();
 
         // 每分钟检查一次时间，自动切换背景
         setInterval(setBackgroundByTime, 60000);
@@ -3768,7 +3981,11 @@
         // 防止页面滚动
         document.addEventListener('touchmove', (e) => {
             if (e.target.closest('#game-container')) {
-                e.preventDefault();
+                const scrollableContainers = ['.album-grid', '.shop-items', '.inventory-items', '.diary-list', '.trash-grid'];
+                const isScrollContainer = scrollableContainers.some(selector => e.target.closest(selector));
+                if (!isScrollContainer) {
+                    e.preventDefault();
+                }
             }
         }, { passive: false });
     </script>
