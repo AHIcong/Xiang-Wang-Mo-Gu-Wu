@@ -2,9 +2,19 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>小H去哪儿</title>
     <style>
+        :root {
+            --design-width: 430;
+            --design-height: 932;
+            --scale: 1;
+            --safe-top: 0px;
+            --safe-bottom: env(safe-area-inset-bottom, 0px);
+            --safe-left: 0px;
+            --safe-right: 0px;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -16,15 +26,17 @@
             background: #f5f0e6;
             overflow: hidden;
             touch-action: pan-y pinch-zoom;
+            font-size: calc(14px * var(--scale));
         }
 
         #game-container {
             width: 100vw;
-            height: 100vh;
+            height: calc(100vh - var(--safe-bottom));
             max-width: 430px;
             margin: 0 auto;
             position: relative;
             overflow: hidden;
+            transform-origin: top left;
         }
 
         #home-page {
@@ -378,9 +390,9 @@
         }
         /* 夜间与白天同量级小框，避免 100% 占满屏；位置可按背景微调 left/top */
         #home-page.night #door-btn {
-            left: 64.4%;
+            left: 64%;
             top: 42%;
-            width: 20%;
+            width: 18%;
             height: 22%;
         }
         #door-btn img {
@@ -2650,26 +2662,41 @@
             if (gameState.xiaohStatus !== 'home') return;
             if (gameState.mushroomsOnGround.length >= 5) return;
 
-            const mushroomType = randomChoice(MUSHROOM_TYPES);
-            const size = mushroomType.size === 'large' ? 50 : 35; // 蘑菇大小
+            const scale = parseFloat(document.documentElement.style.getPropertyValue('--scale')) || 1;
+            const containerWidth = DESIGN_WIDTH * scale;
+            const containerHeight = DESIGN_HEIGHT * scale;
             
-            // 定义不能生成蘑菇的区域（按钮位置和小狗）
-            const forbiddenAreas = [
+            const mushroomType = randomChoice(MUSHROOM_TYPES);
+            const designSize = mushroomType.size === 'large' ? 50 : 35;
+            const size = Math.max(designSize * scale, 30); // 最小30px
+            
+            // 定义不能生成蘑菇的区域（按钮位置和小狗）- 使用设计稿坐标
+            const designForbiddenAreas = [
                 { x: 0, y: 0, width: 120, height: 80 }, // 左上角相册按钮区域
                 { x: 0, y: 270, width: 120, height: 80 }, // 左下角探险按钮区域
                 { x: 310, y: 270, width: 120, height: 80 }, // 右下角商店按钮区域
                 { x: 310, y: 220, width: 120, height: 80 }, // 右中部小屋按钮区域
                 { x: 130, y: 60, width: 170, height: 150 } // 中间小狗位置区域（包含尾巴）
             ];
+            
+            // 将设计坐标转换为实际坐标
+            const forbiddenAreas = designForbiddenAreas.map(area => ({
+                x: area.x * scale,
+                y: area.y * scale,
+                width: area.width * scale,
+                height: area.height * scale
+            }));
 
             // 寻找有效的生成位置
             let x, y;
             let attempts = 0;
             const maxAttempts = 50;
+            const margin = 20 * scale;
+            const maxY = 350 * scale;
             
             do {
-                x = randomInt(20, 430 - size - 20); // 留出边距
-                y = randomInt(30, 350 - size - 30); // 留出上下边距
+                x = randomInt(margin, containerWidth - size - margin); // 留出边距
+                y = randomInt(margin, maxY - size - margin); // 留出上下边距
                 attempts++;
             } while (attempts < maxAttempts && isInForbiddenArea(x, y, size, forbiddenAreas));
 
@@ -2683,7 +2710,8 @@
                 size: mushroomType.size,
                 x: x,
                 y: y,
-                ready: false
+                ready: false,
+                designSize: designSize
             };
 
             gameState.mushroomsOnGround.push(mushroom);
@@ -2704,11 +2732,14 @@
         }
 
         function renderMushroom(mushroom) {
+            const scale = parseFloat(document.documentElement.style.getPropertyValue('--scale')) || 1;
             const mushroomEl = document.createElement('img');
             mushroomEl.className = `mushroom ${mushroom.size} spawning`;
             mushroomEl.src = mushroomGrowthFrameSrc(1);
             mushroomEl.style.left = mushroom.x + 'px';
-            mushroomEl.style.bottom = (350 - mushroom.y) + 'px';
+            mushroomEl.style.bottom = (350 * scale - mushroom.y) + 'px';
+            mushroomEl.style.width = (mushroom.designSize || 35) * scale + 'px';
+            mushroomEl.style.height = (mushroom.designSize || 35) * scale + 'px';
             mushroomEl.dataset.id = mushroom.id;
 
             function mushroomStillInState() {
@@ -3969,6 +4000,38 @@
             });
         }
 
+        const DESIGN_WIDTH = 430;
+        const DESIGN_HEIGHT = 932;
+        const MIN_TOUCH_SIZE = 44;
+
+        function initResponsive() {
+            updateScale();
+            window.addEventListener('resize', updateScale);
+            window.addEventListener('orientationchange', updateScale);
+        }
+
+        function updateScale() {
+            const viewportWidth = Math.min(window.innerWidth, DESIGN_WIDTH);
+            const viewportHeight = window.innerHeight;
+            
+            const widthScale = viewportWidth / DESIGN_WIDTH;
+            const heightScale = viewportHeight / DESIGN_HEIGHT;
+            const scale = Math.min(widthScale, heightScale);
+
+            document.documentElement.style.setProperty('--scale', scale);
+            
+            const safeTop = Math.max(0, window.safeAreaInsets?.top || 0);
+            document.documentElement.style.setProperty('--safe-top', `${safeTop}px`);
+            
+            const gameContainer = document.getElementById('game-container');
+            if (gameContainer) {
+                gameContainer.style.transform = `scale(${scale})`;
+                gameContainer.style.width = `${DESIGN_WIDTH}px`;
+                gameContainer.style.height = `${DESIGN_HEIGHT}px`;
+                gameContainer.style.margin = `${safeTop}px auto 0`;
+            }
+        }
+
         async function initPreload() {
             const totalResources = preloadResources.length + preloadXiahFrames.length;
             updateLoadingProgress(5, '正在加载背景资源...');
@@ -4011,6 +4074,8 @@
                 setTimeout(startGameInitialization, 500);
             }
         }, LOADING_TIMEOUT);
+
+        initResponsive();
 
         initPreload();
 
