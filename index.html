@@ -273,7 +273,9 @@
             cursor: pointer;
             z-index: 50;
             transition: transform 0.3s ease;
-            object-fit: contain;
+            object-fit: cover;
+            border-radius: 50%;
+            overflow: hidden;
         }
         .mushroom.spawning {
             cursor: default;
@@ -287,13 +289,13 @@
         }
         .mushroom.small {
             /* border:#43A047 solid 2px; */
-            width: 60px;
-            height: 60px;
+            width: 80px;
+            height: 80px;
         }
         .mushroom.large {
             /* border:#00597c solid 2px; */
-            width: 100px;
-            height: 100px;
+            width: 120px;
+            height: 120px;
         }
         .mushroom.growing {
             animation: mushroom-grow 0.5s ease-out forwards;
@@ -3133,7 +3135,7 @@
             if (gameState.mushroomsOnGround.length >= 5) return;
 
             const mushroomType = randomChoice(MUSHROOM_TYPES);
-            const designSize = mushroomType.size === 'large' ? 50 : 35;
+            const designSize = mushroomType.size === 'large' ? 70 : 40; // 增大蘑菇尺寸
             const minSize = Math.max(designSize, 44); // 最小触摸区域44px
             
             // 定义不能生成蘑菇的区域（按钮位置和小狗）- 使用设计稿坐标
