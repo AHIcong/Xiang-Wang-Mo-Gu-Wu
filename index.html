@@ -47,33 +47,6 @@
             background-image: url('assets/背景/garden-night.png');
         }
 
-        /* 天空和云朵 */
-        .cloud {
-            position: absolute;
-            background: white;
-            border-radius: 50px;
-            opacity: 0.8;
-            animation: float 20s infinite linear;
-        }
-        .cloud::before, .cloud::after {
-            content: '';
-            position: absolute;
-            background: white;
-            border-radius: 50%;
-        }
-        .cloud1 { width: 80px; height: 30px; top: 8%; left: 10%; }
-        .cloud1::before { width: 40px; height: 40px; top: -20px; left: 10px; }
-        .cloud1::after { width: 50px; height: 35px; top: -15px; left: 30px; }
-
-        .cloud2 { width: 60px; height: 25px; top: 15%; left: 60%; animation-delay: -10s; }
-        .cloud2::before { width: 35px; height: 35px; top: -18px; left: 8px; }
-        .cloud2::after { width: 40px; height: 30px; top: -12px; left: 25px; }
-
-        @keyframes float {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(430px); }
-        }
-
         /* 蘑菇币数量显示 */
         #mushroom-counter {
             position: absolute;
@@ -255,17 +228,27 @@
             cursor: pointer;
             z-index: 50;
             transition: transform 0.3s ease;
+            object-fit: contain;
         }
-        .mushroom:hover {
+        .mushroom.spawning {
+            cursor: default;
+            pointer-events: none;
+        }
+        .mushroom.spawning:hover {
+            transform: none;
+        }
+        .mushroom:hover:not(.spawning) {
             transform: scale(1.1);
         }
         .mushroom.small {
-            width: 40px;
-            height: 40px;
-        }
-        .mushroom.large {
+            /* border:#43A047 solid 2px; */
             width: 60px;
             height: 60px;
+        }
+        .mushroom.large {
+            /* border:#00597c solid 2px; */
+            width: 100px;
+            height: 100px;
         }
         .mushroom.growing {
             animation: mushroom-grow 0.5s ease-out forwards;
@@ -325,7 +308,7 @@
         #xiaoh-character-room {
             position: absolute;
             bottom: 22%;
-            left: 50%;
+            left: 40%;
             transform: translateX(-50%);
             width: auto;
             height: auto;
@@ -387,7 +370,7 @@
             top: 41.9%;
             left: 59.7%;
             transform: translate(-50%, -50%);
-            width: 18%;
+            width: 16%;
             height: 22%;
             min-width: 0;
             min-height: 0;
@@ -400,9 +383,9 @@
         }
         /* 夜间与白天同量级小框，避免 100% 占满屏；位置可按背景微调 left/top */
         #home-page.night #door-btn {
-            left: 60%;
+            left: 64.4%;
             top: 42%;
-            width: 18%;
+            width: 20%;
             height: 22%;
         }
         #door-btn img {
@@ -1445,13 +1428,6 @@
             height: 100%;
             object-fit: cover;
         }
-        .postcard-xiaoh {
-            position: absolute;
-            font-size: 60px;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-        }
         .postcard-content {
             padding: 20px;
         }
@@ -1594,15 +1570,6 @@
             object-fit: contain;
             background: #fff;
         }
-        .album-item-xiaoh {
-            position: absolute;
-            font-size: 35px;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 5;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
-        }
         .album-item-delete {
             position: absolute;
             top: 5px;
@@ -1683,11 +1650,6 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-        }
-        .viewer-xiaoh {
-            position: absolute;
-            font-size: 60px;
-            bottom: 30px;
         }
         .viewer-text {
             color: white;
@@ -1779,10 +1741,11 @@
         
         #interact-xiaoh {
             position: relative;
+            left: 0;
             display: flex;
             align-items: flex-end;
             justify-content: center;
-            transition: all 0.3s ease;
+            transition: left 0.1s linear;
         }
         
         #interact-xiaoh-img {
@@ -1933,17 +1896,111 @@
             font-size: 18px;
             margin-right: 6px;
         }
-        
+
+        /* ==================== 加载界面 ==================== */
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #87CEEB 0%, #98D8C8 50%, #F7DC6F 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.8s ease-out;
+        }
+
+        #loading-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loading-content {
+            text-align: center;
+        }
+
+        .loading-title {
+            font-size: 36px;
+            font-weight: bold;
+            color: #5D3A1A;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(255,255,255,0.5);
+        }
+
+        .loading-xiaoh {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 30px;
+            animation: loading-bounce 1s ease-in-out infinite;
+        }
+
+        .loading-xiaoh img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        @keyframes loading-bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .loading-bar-container {
+            width: 280px;
+            height: 20px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 0 auto 15px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .loading-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #FFB347, #FF8C00);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .loading-text {
+            font-size: 14px;
+            color: #5D3A1A;
+            opacity: 0.8;
+        }
+
+        .loading-tip {
+            position: absolute;
+            bottom: 40px;
+            font-size: 12px;
+            color: #5D3A1A;
+            opacity: 0.6;
+        }
+
     </style>
 </head>
 <body>
+    <!-- 加载界面 -->
+    <div id="loading-screen">
+        <div class="loading-content">
+            <div class="loading-title">🐕 小H去哪儿</div>
+            <div class="loading-xiaoh">
+                <img id="loading-xiaoh-img" src="assets/待机/001.png" alt="小H">
+            </div>
+            <div class="loading-bar-container">
+                <div class="loading-bar" id="loading-bar"></div>
+            </div>
+            <div class="loading-text" id="loading-text">正在加载资源...</div>
+        </div>
+        <div class="loading-tip">首次加载可能需要较长时间，请耐心等待~</div>
+    </div>
+
     <div id="game-container">
         <!-- 首页 -->
         <div id="home-page" class="day">
-            <!-- 云朵 -->
-            <div class="cloud cloud1"></div>
-            <div class="cloud cloud2"></div>
-
             <!-- UI -->
             <button id="day-night-toggle">☀️ 切换夜晚</button>
             <button id="settings-btn">⚙️ 设置</button>
@@ -2354,7 +2411,6 @@
         <div class="photo-viewer" id="photo-viewer">
             <div class="viewer-image" id="viewer-img">
                 <img id="viewer-photo" src="" class="viewer-photo">
-                <span class="viewer-xiaoh">🐕</span>
             </div>
             <div class="viewer-text" id="viewer-text">今天的田野好大，跑了好久~</div>
             <div class="viewer-close" id="viewer-close">✕</div>
@@ -2792,6 +2848,7 @@
 
         function startXiaohSleepIdleAnim() {
             if (xiaohSleepIdleTimer) return;
+            ensureAnimationPreloaded('sleepIdle', XIAOH_SLEEP_IDLE_FRAMES, 'assets/睡觉待机');
             xiaohSleepIdleTimer = setInterval(() => {
                 xiaohSleepIdleFrame += xiaohSleepDirection;
                 // 到达边界时反向
@@ -2823,13 +2880,15 @@
         // 开始趴下睡觉动画
         function startXiaohLaydownAnim(callback) {
             if (xiaohLaydownTimer || currentXiaohState === 'sleep_idle') return;
-            
+            ensureAnimationPreloaded('laydown', XIAOH_LAYDOWN_FRAMES, 'assets/趴下睡觉');
+            ensureAnimationPreloaded('sleepIdle', XIAOH_SLEEP_IDLE_FRAMES, 'assets/睡觉待机');
+
             stopXiaohIdleAnim();
             stopXiaohSleepIdleAnim();
-            
+
             currentXiaohState = 'laydown';
             xiaohLaydownFrame = 0;
-            
+
             // 更新房间界面的小H样式（睡觉状态）
             if (el.xiaohCharacterRoom) {
                 el.xiaohCharacterRoom.classList.add('xiaoh-sleeping');
@@ -2882,7 +2941,7 @@
             if (el.xiaohCharacterRoom) {
                 el.xiaohCharacterRoom.classList.remove('xiaoh-sleeping');
             }
-            
+
             currentXiaohState = 'idle';
             xiaohIdleFrame = 0;
             if (el.xiaohSpriteImg) {
@@ -2894,6 +2953,144 @@
             startXiaohIdleAnim();
         }
 
+        // ==================== 互动界面序列帧动画 ====================
+        const XIAOH_EAT_FRAMES = 22;
+        const XIAOH_EAT_MS = 80;
+        let xiaohEatTimer = null;
+        let xiaohEatFrame = 0;
+
+        function xiaohEatFrameSrc(index) {
+            const n = String(index + 1).padStart(3, '0');
+            return 'assets/低头吃东西/' + n + '.png';
+        }
+
+        function startXiaohEatAnim() {
+            if (xiaohEatTimer) return;
+            ensureAnimationPreloaded('eat', XIAOH_EAT_FRAMES, 'assets/低头吃东西');
+            stopInteractXiaohIdleAnim();
+            xiaohEatFrame = 0;
+            xiaohEatTimer = setInterval(() => {
+                if (xiaohEatFrame >= XIAOH_EAT_FRAMES - 1) {
+                    stopXiaohEatAnim();
+                    startInteractXiaohIdleAnim();
+                    return;
+                }
+                xiaohEatFrame++;
+                const img = document.getElementById('interact-xiaoh-img');
+                if (img) img.src = xiaohEatFrameSrc(xiaohEatFrame);
+            }, XIAOH_EAT_MS);
+        }
+
+        function stopXiaohEatAnim() {
+            if (xiaohEatTimer) {
+                clearInterval(xiaohEatTimer);
+                xiaohEatTimer = null;
+            }
+        }
+
+        const XIAOH_HAPPY_FRAMES = 25;
+        const XIAOH_HAPPY_MS = 70;
+        let xiaohHappyTimer = null;
+        let xiaohHappyFrame = 0;
+
+        function xiaohHappyFrameSrc(index) {
+            const n = String(index + 1).padStart(3, '0');
+            return 'assets/开心/' + n + '.png';
+        }
+
+        function startXiaohHappyAnim() {
+            if (xiaohHappyTimer) return;
+            ensureAnimationPreloaded('happy', XIAOH_HAPPY_FRAMES, 'assets/开心');
+            stopInteractXiaohIdleAnim();
+            xiaohHappyFrame = 0;
+            xiaohHappyTimer = setInterval(() => {
+                if (xiaohHappyFrame >= XIAOH_HAPPY_FRAMES - 1) {
+                    stopXiaohHappyAnim();
+                    startInteractXiaohIdleAnim();
+                    return;
+                }
+                xiaohHappyFrame++;
+                const img = document.getElementById('interact-xiaoh-img');
+                if (img) img.src = xiaohHappyFrameSrc(xiaohHappyFrame);
+            }, XIAOH_HAPPY_MS);
+        }
+
+        function stopXiaohHappyAnim() {
+            if (xiaohHappyTimer) {
+                clearInterval(xiaohHappyTimer);
+                xiaohHappyTimer = null;
+            }
+        }
+
+        const XIAOH_RUN_LEFT_FRAMES = 6;
+        const XIAOH_RUN_RIGHT_FRAMES = 7;
+        const XIAOH_RUN_MS = 100;
+        let xiaohRunTimer = null;
+        let xiaohRunFrame = 0;
+        let xiaohRunDirection = 1;
+        let xiaohRunPosition = 0;
+
+        function xiaohRunLeftFrameSrc(index) {
+            const n = String(index + 1).padStart(3, '0');
+            return 'assets/向左跑/' + n + '.png';
+        }
+
+        function xiaohRunRightFrameSrc(index) {
+            const n = String(index + 1).padStart(3, '0');
+            return 'assets/向右跑/' + n + '.png';
+        }
+
+        function startXiaohRunAnim(direction) {
+            if (xiaohRunTimer) return;
+            ensureAnimationPreloaded('runLeft', XIAOH_RUN_LEFT_FRAMES, 'assets/向左跑');
+            ensureAnimationPreloaded('runRight', XIAOH_RUN_RIGHT_FRAMES, 'assets/向右跑');
+            stopInteractXiaohIdleAnim();
+            xiaohRunFrame = 0;
+            xiaohRunDirection = direction;
+            xiaohRunTimer = setInterval(() => {
+                const container = document.querySelector('.interact-xiaoh-container');
+                if (container && el.interactXiaoh) {
+                    const containerWidth = container.offsetWidth;
+                    const img = document.getElementById('interact-xiaoh-img');
+                    const characterWidth = img ? img.offsetWidth : 150;
+                    const maxMove = (containerWidth - characterWidth) / 2 - 10;
+
+                    let newPosition = xiaohRunPosition + xiaohRunDirection * 5;
+
+                    if (newPosition >= maxMove) {
+                        newPosition = maxMove;
+                        xiaohRunDirection = -1;
+                    } else if (newPosition <= -maxMove) {
+                        newPosition = -maxMove;
+                        xiaohRunDirection = 1;
+                    }
+
+                    xiaohRunPosition = newPosition;
+                    el.interactXiaoh.style.left = `${xiaohRunPosition}px`;
+                }
+
+                xiaohRunFrame = (xiaohRunFrame + 1) % (xiaohRunDirection === 1 ? XIAOH_RUN_RIGHT_FRAMES : XIAOH_RUN_LEFT_FRAMES);
+                const img = document.getElementById('interact-xiaoh-img');
+                if (img) {
+                    img.src = xiaohRunDirection === 1 ? xiaohRunRightFrameSrc(xiaohRunFrame) : xiaohRunLeftFrameSrc(xiaohRunFrame);
+                }
+            }, XIAOH_RUN_MS);
+        }
+
+        function stopXiaohRunAnim() {
+            if (xiaohRunTimer) {
+                clearInterval(xiaohRunTimer);
+                xiaohRunTimer = null;
+            }
+        }
+
+        function resetXiaohRunPosition() {
+            xiaohRunPosition = 0;
+            if (el.interactXiaoh) {
+                el.interactXiaoh.style.left = '0px';
+            }
+        }
+
         // 检查是否应该睡觉（夜晚房间）
         function checkSleepCondition() {
             const roomPage = document.getElementById('room-page');
@@ -2901,9 +3098,8 @@
             const isInRoom = roomPage && roomPage.classList.contains('active');
             const isNight = (roomPage && roomPage.classList.contains('night')) || 
                            (homePage && homePage.classList.contains('night'));
-            
+
             if (isInRoom && isNight && gameState.xiaohStatus === 'home') {
-                // 夜晚在房间里，且小H在家，触发睡觉
                 if (currentXiaohState !== 'sleep_idle' && currentXiaohState !== 'laydown') {
                     startXiaohLaydownAnim();
                 }
@@ -2925,6 +3121,13 @@
             { name: 'tallShroom_tan', size: 'large' },
             { name: 'tinyShroom_tan', size: 'small' }
         ];
+
+        const MUSHROOM_GROWTH_FRAME_COUNT = 15;
+        const MUSHROOM_GROWTH_FRAME_MS = 70;
+
+        function mushroomGrowthFrameSrc(frame) {
+            return `assets/蘑菇生长/${String(frame).padStart(3, '0')}.png`;
+        }
 
         let mushroomSpawnInterval;
         let mushroomIdCounter = 0;
@@ -2965,7 +3168,8 @@
                 type: mushroomType.name,
                 size: mushroomType.size,
                 x: x,
-                y: y
+                y: y,
+                ready: false
             };
 
             gameState.mushroomsOnGround.push(mushroom);
@@ -2987,24 +3191,47 @@
 
         function renderMushroom(mushroom) {
             const mushroomEl = document.createElement('img');
-            mushroomEl.className = `mushroom ${mushroom.size}`;
-            let imgPath = `assets/${mushroom.type}.png`;
-            if (mushroom.type.includes('Shroom')) {
-                imgPath = `assets/蘑菇/${mushroom.type}.png`;
-            }
-            mushroomEl.src = imgPath;
+            mushroomEl.className = `mushroom ${mushroom.size} spawning`;
+            mushroomEl.src = mushroomGrowthFrameSrc(1);
             mushroomEl.style.left = mushroom.x + 'px';
             mushroomEl.style.bottom = (350 - mushroom.y) + 'px';
             mushroomEl.dataset.id = mushroom.id;
 
-            mushroomEl.addEventListener('click', () => {
-                collectMushroom(mushroomEl, mushroom);
-            });
+            function mushroomStillInState() {
+                return gameState.mushroomsOnGround.some(m => m.id === mushroom.id);
+            }
+
+            function finishMushroomGrowth() {
+                if (!mushroomStillInState() || !mushroomEl.isConnected) return;
+                mushroomEl.src = mushroomGrowthFrameSrc(MUSHROOM_GROWTH_FRAME_COUNT);
+                mushroomEl.classList.remove('spawning');
+                mushroom.ready = true;
+                mushroomEl.addEventListener('click', () => {
+                    collectMushroom(mushroomEl, mushroom);
+                });
+            }
+
+            let growthFrame = 1;
+            const growthTimer = setInterval(() => {
+                if (!mushroomStillInState() || !mushroomEl.isConnected) {
+                    clearInterval(growthTimer);
+                    return;
+                }
+                growthFrame++;
+                if (growthFrame <= MUSHROOM_GROWTH_FRAME_COUNT) {
+                    mushroomEl.src = mushroomGrowthFrameSrc(growthFrame);
+                } else {
+                    clearInterval(growthTimer);
+                    finishMushroomGrowth();
+                }
+            }, MUSHROOM_GROWTH_FRAME_MS);
 
             el.ground.appendChild(mushroomEl);
         }
 
         function collectMushroom(elMushroom, mushroom) {
+            if (!mushroom.ready) return;
+
             // 播放采蘑菇音效
             playPickSound();
 
@@ -3953,13 +4180,18 @@
         });
 
         function animateXiaoh(action) {
-            el.interactXiaoh.classList.remove('action-feed', 'action-pet', 'action-play');
-            setTimeout(() => {
-                el.interactXiaoh.classList.add(`action-${action}`);
+            if (action === 'feed') {
+                startXiaohEatAnim();
+            } else if (action === 'pet') {
+                startXiaohHappyAnim();
+            } else if (action === 'play') {
+                const direction = Math.random() < 0.5 ? -1 : 1;
+                startXiaohRunAnim(direction);
                 setTimeout(() => {
-                    el.interactXiaoh.classList.remove(`action-${action}`);
-                }, 600);
-            }, 50);
+                    stopXiaohRunAnim();
+                    startInteractXiaohIdleAnim();
+                }, 1500);
+            }
         }
 
         function addDiary(action, content) {
@@ -4285,13 +4517,150 @@
             }, 5 * 60 * 1000);
         });
 
-        // ==================== 初始化 ====================
-        loadGame();
-        updateTrashBtn();
-        startMushroomSpawning();
-        setBackgroundByTime();
-        initBGM();
-        startXiaohIdleAnim();
+        // ==================== 资源预加载系统 ====================
+        const LOADING_TIMEOUT = 15000;
+
+        const preloadResources = [
+            'assets/背景/garden-day.png',
+            'assets/背景/garden-night.png',
+            'assets/待机/001.png',
+            'assets/待机/002.png',
+            'assets/待机/003.png',
+            'assets/待机/004.png',
+            'assets/待机/005.png',
+            'assets/待机/006.png',
+            'assets/待机/007.png',
+            'assets/待机/008.png',
+            'assets/组件/白天门.png',
+            'assets/组件/晚上的门.png'
+        ];
+
+        const preloadXiahFrames = [];
+        for (let i = 1; i <= 22; i++) {
+            preloadXiahFrames.push(`assets/待机/${String(i).padStart(3, '0')}.png`);
+        }
+        for (let i = 1; i <= 22; i++) {
+            preloadXiahFrames.push(`assets/低头吃东西/${String(i).padStart(3, '0')}.png`);
+        }
+        for (let i = 1; i <= 25; i++) {
+            preloadXiahFrames.push(`assets/开心/${String(i).padStart(3, '0')}.png`);
+        }
+
+        const preloadedSets = {};
+
+        function preloadAnimationSet(name, frameCount, folder) {
+            if (preloadedSets[name]) return;
+            preloadedSets[name] = 'loading';
+
+            for (let i = 1; i <= frameCount; i++) {
+                const img = new Image();
+                img.src = `${folder}/${String(i).padStart(3, '0')}.png`;
+            }
+
+            setTimeout(() => {
+                preloadedSets[name] = true;
+            }, frameCount * 20);
+        }
+
+        function ensureAnimationPreloaded(name, frameCount, folder) {
+            if (!preloadedSets[name]) {
+                preloadAnimationSet(name, frameCount, folder);
+            }
+        }
+
+        let loadedCount = 0;
+        let isGameReady = false;
+
+        function updateLoadingProgress(percent, text) {
+            const loadingBar = document.getElementById('loading-bar');
+            const loadingText = document.getElementById('loading-text');
+            if (loadingBar) loadingBar.style.width = percent + '%';
+            if (loadingText) loadingText.textContent = text;
+        }
+
+        function hideLoadingScreen() {
+            const loadingScreen = document.getElementById('loading-screen');
+            if (loadingScreen) {
+                loadingScreen.classList.add('hidden');
+                setTimeout(() => {
+                    loadingScreen.style.display = 'none';
+                }, 800);
+            }
+        }
+
+        function startGameInitialization() {
+            if (isGameReady) return;
+            isGameReady = true;
+
+            loadGame();
+            updateTrashBtn();
+            startMushroomSpawning();
+            setBackgroundByTime();
+            initBGM();
+            startXiaohIdleAnim();
+
+            setTimeout(hideLoadingScreen, 300);
+        }
+
+        function preloadImage(src) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = () => {
+                    loadedCount++;
+                    resolve(true);
+                };
+                img.onerror = () => {
+                    loadedCount++;
+                    resolve(false);
+                };
+                img.src = src;
+            });
+        }
+
+        async function initPreload() {
+            const totalResources = preloadResources.length + preloadXiahFrames.length;
+            updateLoadingProgress(5, '正在加载背景资源...');
+
+            for (let i = 0; i < preloadResources.length; i++) {
+                await preloadImage(preloadResources[i]);
+                const percent = Math.floor((loadedCount / totalResources) * 80) + 5;
+                updateLoadingProgress(percent, `正在加载资源... ${loadedCount}/${totalResources}`);
+            }
+
+            updateLoadingProgress(85, '正在加载角色动画...');
+
+            const loadingImg = document.getElementById('loading-xiaoh-img');
+            let frameIndex = 0;
+
+            function animateLoadingSprite() {
+                if (!isGameReady) {
+                    frameIndex = (frameIndex + 1) % 8;
+                    if (loadingImg) {
+                        loadingImg.src = `assets/待机/${String(frameIndex + 1).padStart(3, '0')}.png`;
+                    }
+                    setTimeout(animateLoadingSprite, 150);
+                }
+            }
+            animateLoadingSprite();
+
+            for (let i = 0; i < preloadXiahFrames.length; i++) {
+                await preloadImage(preloadXiahFrames[i]);
+                const percent = Math.floor(85 + (loadedCount / totalResources) * 10);
+                updateLoadingProgress(percent, `正在加载动画帧... ${loadedCount}/${totalResources}`);
+            }
+
+            updateLoadingProgress(98, '即将开始游戏...');
+            setTimeout(startGameInitialization, 200);
+        }
+
+        setTimeout(() => {
+            if (!isGameReady) {
+                updateLoadingProgress(100, '加载完成！');
+                setTimeout(startGameInitialization, 500);
+            }
+        }, LOADING_TIMEOUT);
+
+        initPreload();
 
         // 每分钟检查一次时间，自动切换背景
         setInterval(setBackgroundByTime, 60000);
@@ -4299,7 +4668,11 @@
         // 防止页面滚动
         document.addEventListener('touchmove', (e) => {
             if (e.target.closest('#game-container')) {
-                e.preventDefault();
+                const scrollableContainers = ['.album-grid', '.shop-items', '.inventory-items', '.diary-list', '.trash-grid'];
+                const isScrollContainer = scrollableContainers.some(selector => e.target.closest(selector));
+                if (!isScrollContainer) {
+                    e.preventDefault();
+                }
             }
         }, { passive: false });
     </script>
