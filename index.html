@@ -347,6 +347,11 @@
             transform: translateX(-50%) translateX(200px) !important;
             transition: all 1s ease;
         }
+        
+        /* 睡觉隐藏状态 - 庭院中小狗睡觉时隐藏 */
+        .xiaoh-hidden {
+            display: none !important;
+        }
 
         /* 小屋按钮 */
         #room-btn {
@@ -546,6 +551,32 @@
             transform: scale(1.02);
         }
         #room-courtyard-btn:active { transform: scale(0.95); }
+        
+        /* 返回庭院箭头按钮 */
+        #room-back-arrow {
+            position: absolute;
+            bottom: 8%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 60px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            z-index: 100;
+            padding: 0;
+        }
+        #room-back-arrow img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        #room-back-arrow:hover {
+            transform: translateX(-50%) scale(1.1);
+        }
+        #room-back-arrow:active {
+            transform: translateX(-50%) scale(0.95);
+        }
 
         /* 出发按钮 */
         #go-btn {
@@ -620,8 +651,39 @@
         }
 
         @keyframes float-up {
-            0% { opacity: 1; transform: translateY(0); }
-            100% { opacity: 0; transform: translateY(-60px); }
+            0% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            100% { opacity: 0; transform: translateX(-50%) translateY(-60px); }
+        }
+
+        /* 消息弹窗 */
+        .message-popup {
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            z-index: 300;
+            animation: message-in 0.3s ease-out;
+        }
+
+        .message-popup.fade-out {
+            animation: message-out 0.5s ease-out forwards;
+        }
+
+        @keyframes message-in {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+            100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+
+        @keyframes message-out {
+            0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
         }
 
         /* 弹窗遮罩 */
@@ -663,96 +725,336 @@
             margin-bottom: 20px;
         }
 
-        /* 商店和物品栏样式 */
-        .shop-tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            justify-content: center;
+        /* 商店页面样式 */
+        #shop-page {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            max-width: 430px;
+            margin: 0 auto;
+            overflow: hidden;
+            z-index: 50;
+            background: #D4A574;
         }
-        .shop-tab {
-            padding: 8px 20px;
-            border-radius: 20px;
-            background: #F5F5F5;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.2s;
+        
+        #shop-page.active {
+            display: block;
         }
-        .shop-tab.active {
-            background: #4ECDC4;
-            color: white;
+        
+        .shop-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            pointer-events: none;
         }
-
-        .shop-items {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            max-height: 300px;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: thin;
-        }
-
-        .shop-item {
-            background: #FFF8E7;
-            border-radius: 15px;
-            padding: 15px;
-            text-align: center;
-            border: 2px solid #E8D5B7;
-            transition: all 0.2s;
-        }
-        .shop-item:hover {
-            border-color: #F5A623;
-            transform: translateY(-2px);
-        }
-        .shop-item.disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .item-icon {
-            font-size: 32px;
-            margin-bottom: 8px;
-        }
-
-        .item-name {
+        
+        .shop-title {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 28px;
             font-weight: bold;
             color: #5D3A1A;
+            text-shadow: 2px 2px 4px rgba(255,255,255,0.9);
+            z-index: 10;
+        }
+        
+        .shop-mushrooms {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #FFD700;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            background: rgba(93, 58, 26, 0.85);
+            padding: 8px 15px;
+            border-radius: 20px;
+            z-index: 10;
+        }
+        
+        /* 分页按钮 */
+        .shop-page-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.9);
+            font-size: 24px;
+            font-weight: bold;
+            color: #8B4513;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.2s;
+            z-index: 10;
+        }
+        
+        .shop-page-btn:hover {
+            background: #FFD700;
+            transform: translateY(-50%) scale(1.1);
+        }
+        
+        .shop-prev-btn {
+            left: 10px;
+        }
+        
+        .shop-next-btn {
+            right: 10px;
+        }
+        
+        /* 页码指示器 */
+        .shop-page-indicator {
+            position: absolute;
+            bottom: 180px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
             font-size: 14px;
-            margin-bottom: 5px;
+            z-index: 10;
         }
-
-        .item-desc {
-            font-size: 12px;
-            color: #8B7355;
-            margin-bottom: 10px;
-            min-height: 30px;
+        
+        /* 商品容器 */
+        .shop-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
         }
-
-        .item-price {
+        
+        /* 单个商品项 - 绝对定位 */
+        .shop-item {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.15s;
+            padding: 0;
+            margin: 0;
+            width: 170px;  /* 每个商品的宽度 */
+        }
+        
+        /* 左上角商品 - 手动设置位置 */
+        .shop-item:nth-child(1) {
+            top: 300px;    /* 距离顶部 */
+            left: 25px;   /* 距离左侧 */
+        }
+        
+        /* 右上角商品 - 手动设置位置 */
+        .shop-item:nth-child(2) {
+            top: 300px;     /* 距离顶部 */
+            right: 25px;   /* 距离右侧 */
+        }
+        
+        /* 左下角商品 - 手动设置位置 */
+        .shop-item:nth-child(3) {
+            top: 515px;    /* 距离顶部 */
+            left: 25px;    /* 距离左侧 */
+        }
+        
+        /* 右下角商品 - 手动设置位置 */
+        .shop-item:nth-child(4) {
+            top: 515px;    /* 距离顶部 */
+            right: 25px;   /* 距离右侧 */
+        }
+        
+        /* 第2页 - 左上角商品 */
+        .shop-item:nth-child(5) {
+            top: 300px;    /* 距离顶部 */
+            left: 25px;    /* 距离左侧 */
+        }
+        
+        /* 第2页 - 右上角商品 */
+        .shop-item:nth-child(6) {
+            top: 300px;    /* 距离顶部 */
+            right: 25px;   /* 距离右侧 */
+        }
+        
+        /* 第2页 - 左下角商品 */
+        .shop-item:nth-child(7) {
+            top: 515px;    /* 距离顶部 */
+            left: 25px;    /* 距离左侧 */
+        }
+        
+        /* 第2页 - 右下角商品 */
+        .shop-item:nth-child(8) {
+            top: 515px;    /* 距离顶部 */
+            right: 25px;   /* 距离右侧 */
+        }
+        
+        /* 第3页 - 左上角商品 */
+        .shop-item:nth-child(9) {
+            top: 300px;    /* 距离顶部 */
+            left: 25px;    /* 距离左侧 */
+        }
+        
+        /* 第3页 - 右上角商品 */
+        .shop-item:nth-child(10) {
+            top: 300px;    /* 距离顶部 */
+            right: 25px;   /* 距离右侧 */
+        }
+        
+        /* 第3页 - 左下角商品 */
+        .shop-item:nth-child(11) {
+            top: 515px;    /* 距离顶部 */
+            left: 25px;    /* 距离左侧 */
+        }
+        
+        .shop-item:hover {
+            transform: scale(1.01);
+        }
+        
+        .shop-item.selected {
+            outline: 3px solid #FFD700;
+            outline-offset: 3px;
+            border-radius: 10px;
+        }
+        
+        /* 商品图片框 - 精准贴合背景图中的藤编框 */
+        .shop-item-image {
+            width: 100%;
+            height: 110px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 4px;
-            color: #E53935;
-            font-weight: bold;
+            background: transparent;
+            border-radius: 0;
+            margin-bottom: 0;
+            padding: 2px;
         }
-
-        .buy-btn {
-            background: linear-gradient(180deg, #4CAF50 0%, #43A047 100%);
-            color: white;
+        
+        .shop-item-image img {
+            max-width: 80%;
+            max-height: 85px;
+            object-fit: contain;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+        }
+        
+        /* 商品名称和价格容器 - 同一行显示 */
+        .shop-item-info {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 3px 6px;
+            background: transparent;
+        }
+        
+        /* 商品名称 - 在左边 */
+        .shop-item-name {
+            font-size: 17px;
+            font-weight: bold;
+            color: #5D3A1A;
+            background: transparent;
+            padding: 0;
+            border-radius: 0;
+            margin: 0;
+            line-height: 1.2;
+        }
+        
+        /* 商品价格 - 在右边 */
+        .shop-item-price {
+            font-size: 14px;
+            color: #8B4513;
+            font-weight: bold;
+            margin: 0;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.9);
+        }
+        
+        /* 描述区域 */
+        .shop-description {
+            position: absolute;
+            bottom: 90px;
+            left: 25px;
+            right: 25px;
+            height: 55px;
+            background: rgba(255, 248, 220, 0.95);
+            border: 2px solid #D4A574;
+            border-radius: 12px;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .description-text {
+            font-size: 14px;
+            color: #5D3A1A;
+            text-align: center;
+            line-height: 1.5;
+            font-weight: 500;
+        }
+        
+        /* 购买按钮 */
+        .shop-buy-btn {
+            position: absolute;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 160px;
+            height: 48px;
+            background: linear-gradient(180deg, #FF6B6B 0%, #EE5A5A 100%);
             border: none;
-            padding: 8px 16px;
-            border-radius: 15px;
+            border-radius: 24px;
+            color: white;
+            font-size: 18px;
             font-weight: bold;
             cursor: pointer;
-            margin-top: 8px;
+            box-shadow: 0 5px 15px rgba(238, 90, 90, 0.45);
             transition: all 0.2s;
         }
-        .buy-btn:hover { transform: scale(1.05); }
-        .buy-btn:disabled {
+        
+        .shop-buy-btn:active {
+            transform: translateX(-50%) scale(0.95);
+            box-shadow: 0 2px 8px rgba(238, 90, 90, 0.3);
+        }
+        
+        .shop-buy-btn:disabled {
             background: #ccc;
+            box-shadow: none;
             cursor: not-allowed;
+        }
+        
+        /* 返回按钮 */
+        .shop-back-btn {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid #8B691E;
+            border-radius: 20px;
+            color: #8B691E;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            z-index: 10;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+            transition: all 0.2s;
+        }
+        
+        .shop-back-btn:hover {
+            background: #FFF8DC;
+        }
+        
+        .shop-back-btn:active {
+            transform: scale(0.95);
         }
 
         /* 物品栏样式 */
@@ -831,6 +1133,22 @@
             font-weight: bold;
             margin: -8px -8px 0 0;
             float: right;
+        }
+
+        .item-icon {
+            width: 50px;
+            height: 50px;
+            margin: 0 auto 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .item-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            image-rendering: pixelated;
         }
 
         @keyframes bounce {
@@ -1794,6 +2112,11 @@
             <!-- 返回庭院按钮 -->
             <button id="room-courtyard-btn">🌳 庭院</button>
             
+            <!-- 返回庭院箭头按钮 -->
+            <button id="room-back-arrow">
+                <img src="assets/背景/箭头.png" alt="返回庭院">
+            </button>
+            
             <!-- 商店按钮 -->
             <button id="room-shop-btn">🛒 商店</button>
         </div>
@@ -1903,25 +2226,158 @@
             </div>
         </div>
 
-        <!-- 商店弹窗 -->
-        <div class="modal-overlay shop-modal" id="shop-modal">
-            <div class="modal-content">
-                <div class="modal-title">🛒 蘑菇商店</div>
+        <!-- 商店页面 -->
+        <div id="shop-page">
+            <!-- 返回按钮 -->
+            <button class="shop-back-btn" id="shop-back">← 返回</button>
+            
+            <!-- 蘑菇币显示 -->
+            <div class="shop-mushrooms">🍄 <span id="shop-mushrooms-count">0</span></div>
+            
+            <!-- 标题 -->
+            <div class="shop-title">🛒 蘑菇商店</div>
+            
+            <!-- 背景图 -->
+            <img class="shop-background" src="assets/背景/shop-background.png" alt="商店背景">
+            
+            <!-- 分页按钮 -->
+            <button class="shop-page-btn shop-prev-btn" id="shop-prev-btn" style="display: none;">‹</button>
+            <button class="shop-page-btn shop-next-btn" id="shop-next-btn">›</button>
+            
+            <!-- 页码显示 -->
+            <div class="shop-page-indicator" id="shop-page-indicator">1 / 2</div>
+            
+            <!-- 商品区域 -->
+            <div class="shop-grid" id="shop-grid-container">
+                <!-- 食物 - 骨头 (5) -->
+                <div class="shop-item" data-item="bone">
+                    <div class="shop-item-image">
+                        <img src="assets/食物/骨头.png" alt="骨头">
+                    </div>
+                    <div class="shop-item-info">
+                        <div class="shop-item-name">骨头</div>
+                        <div class="shop-item-price">5 蘑菇币</div>
+                    </div>
+                </div>
                 
-                <div class="shop-tabs">
-                    <div class="shop-tab active" data-tab="food">🍖 食物</div>
-                    <div class="shop-tab" data-tab="prop">🎒 道具</div>
+                <!-- 食物 - 羊排 (15) -->
+                <div class="shop-item" data-item="meat">
+                    <div class="shop-item-image">
+                        <img src="assets/食物/羊排.png" alt="羊排">
+                    </div>
+                    <div class="shop-item-info">
+                        <div class="shop-item-name">羊排</div>
+                        <div class="shop-item-price">15 蘑菇币</div>
+                    </div>
                 </div>
-
-                <div class="shop-items" id="shop-items">
-                    <!-- 商品将通过JavaScript动态生成 -->
+                
+                <!-- 食物 - 便当 (30) -->
+                <div class="shop-item" data-item="bento">
+                    <div class="shop-item-image">
+                        <img src="assets/食物/便当.png" alt="便当">
+                    </div>
+                    <div class="shop-item-info">
+                        <div class="shop-item-name">便当</div>
+                        <div class="shop-item-price">30 蘑菇币</div>
+                    </div>
                 </div>
-
-                <div style="margin-top: 20px; display: flex; gap: 10px;">
-                    <button class="modal-btn secondary" id="shop-close">关闭</button>
-                    <button class="modal-btn primary" id="shop-back" style="display:none;">返回物品栏</button>
+                
+                <!-- 食物 - 牛排 (30) -->
+                <div class="shop-item" data-item="steak">
+                    <div class="shop-item-image">
+                        <img src="assets/食物/牛排.png" alt="牛排">
+                    </div>
+                    <div class="shop-item-info">
+                        <div class="shop-item-name">牛排</div>
+                        <div class="shop-item-price">30 蘑菇币</div>
+                    </div>
+                </div>
+                
+                <!-- 食物 - 寿司 (50) -->
+                <div class="shop-item" data-item="sushi">
+                    <div class="shop-item-image">
+                        <img src="assets/食物/寿司.png" alt="寿司">
+                    </div>
+                    <div class="shop-item-info">
+                        <div class="shop-item-name">寿司</div>
+                        <div class="shop-item-price">50 蘑菇币</div>
+                    </div>
+                </div>
+                
+                <!-- 道具 - 玩具球 (15) -->
+                <div class="shop-item" data-item="ball">
+                    <div class="shop-item-image">
+                        <img src="assets/道具/玩具球.png" alt="玩具球">
+                    </div>
+                    <div class="shop-item-info">
+                        <div class="shop-item-name">玩具球</div>
+                        <div class="shop-item-price">15 蘑菇币</div>
+                    </div>
+                </div>
+                
+                <!-- 道具 - 碗 (15) -->
+                <div class="shop-item" data-item="bowl">
+                    <div class="shop-item-image">
+                        <img src="assets/道具/碗.png" alt="碗">
+                    </div>
+                    <div class="shop-item-info">
+                        <div class="shop-item-name">碗</div>
+                        <div class="shop-item-price">15 蘑菇币</div>
+                    </div>
+                </div>
+                
+                <!-- 道具 - 游泳圈 (20) -->
+                <div class="shop-item" data-item="swim_ring">
+                    <div class="shop-item-image">
+                        <img src="assets/道具/游泳圈.png" alt="游泳圈">
+                    </div>
+                    <div class="shop-item-info">
+                        <div class="shop-item-name">游泳圈</div>
+                        <div class="shop-item-price">20 蘑菇币</div>
+                    </div>
+                </div>
+                
+                <!-- 道具 - 风车 (20) -->
+                <div class="shop-item" data-item="windmill">
+                    <div class="shop-item-image">
+                        <img src="assets/道具/风车png.png" alt="风车">
+                    </div>
+                    <div class="shop-item-info">
+                        <div class="shop-item-name">风车</div>
+                        <div class="shop-item-price">20 蘑菇币</div>
+                    </div>
+                </div>
+                
+                <!-- 道具 - 项圈 (25) -->
+                <div class="shop-item" data-item="collar">
+                    <div class="shop-item-image">
+                        <img src="assets/道具/项圈.png" alt="项圈">
+                    </div>
+                    <div class="shop-item-info">
+                        <div class="shop-item-name">项圈</div>
+                        <div class="shop-item-price">25 蘑菇币</div>
+                    </div>
+                </div>
+                
+                <!-- 道具 - 指南针 (35) -->
+                <div class="shop-item" data-item="compass">
+                    <div class="shop-item-image">
+                        <img src="assets/道具/指南针.png" alt="指南针">
+                    </div>
+                    <div class="shop-item-info">
+                        <div class="shop-item-name">指南针</div>
+                        <div class="shop-item-price">35 蘑菇币</div>
+                    </div>
                 </div>
             </div>
+            
+            <!-- 描述区域 -->
+            <div class="shop-description">
+                <div class="description-text" id="shop-description-text">点击商品查看详情</div>
+            </div>
+            
+            <!-- 购买按钮 -->
+            <button class="shop-buy-btn" id="shop-buy-btn" disabled>购买</button>
         </div>
 
         <!-- 物品栏弹窗 -->
@@ -1984,42 +2440,49 @@
 
         const POSTCARDS = {
             field: [
-                { text: '今天的田野好大，跑了好久~', image: 'assets/明信片素材/01.png', name: '春日聚会' },
-                { text: '累了，躺一会儿...', image: 'assets/明信片素材/02.png', name: '森林微笑' }
+                { text: '他们在笑什么啊？反正跟着笑就对了~ 太阳好暖，腿有点麻了但不想动', image: 'assets/明信片素材/01.png', name: '春日聚会' },
+                { text: '跑起来跑起来！草的味道好多，前面那个是我的同类吧？走走走去认识一下！', image: 'assets/明信片素材/02.png', name: '森林小道' }
             ],
             river: [
-                { text: '河里的自己好帅呀', image: 'assets/明信片素材/03.png', name: '村舍午餐' },
-                { text: '哇！抓到了！', image: 'assets/明信片素材/04.png', name: '温馨家庭' }
+                { text: '这个姐姐身上好香，是肉的味道！抱紧一点可以吗？饭能不能别吃那么久啊', image: 'assets/明信片素材/03.png', name: '村舍午餐时光' },
+                { text: '他们的手都好温柔，一直摸我脑袋。头都快被摸秃了，但是好舒服不想躲', image: 'assets/明信片素材/04.png', name: '温馨家庭合影' }
             ],
             neighbor: [
-                { text: '那几只鸡好肥...', image: 'assets/明信片素材/05.png', name: '乡村聚餐' },
-                { text: '交到新朋友啦！', image: 'assets/明信片素材/06.png', name: '乡村暖意' }
+                { text: '我就这样坐着，风里有饭香味。有人趴着不吃了，那我帮他吃掉？', image: 'assets/明信片素材/05.png', name: '乡村聚餐' },
+                { text: '又拍？抱这么紧我怎么跑！不过他身上有橘子味，再待一会儿也行', image: 'assets/明信片素材/06.png', name: '乡村暖意合影' }
             ],
             market: [
-                { text: '口水都要流下来了', image: 'assets/明信片素材/01.png', name: '春日聚会' },
-                { text: '这个好漂亮！', image: 'assets/明信片素材/02.png', name: '森林微笑' }
+                { text: '太阳好暖，跟着笑就对了~', image: 'assets/明信片素材/01.png', name: '春日聚会' },
+                { text: '跑起来！前面那个是我的同类吧！', image: 'assets/明信片素材/02.png', name: '森林小道' }
             ]
         };
-
+        
         const GUEST_COMMENTS = [
-            '何老师："看到小H跑那么开心，我也开心呀~"',
-            '黄大厨："回来啦！给你做好吃的！"',
-            '彭小哥："小H你跑得比我还快！"'
+            '黄老师："小H你是不是又偷吃了我桌上的花生？"',
+            '何老师："慢点慢点！小H你拽着我跑什么呢！"',
+            '黄老师："小H你别盯了，没你的份。"',
+            '何老师："小H今天好乖，奖励加个鸡腿。"',
+            '彭彭："小H你别盯我碗，我自己还不够吃呢。"',
+            '彭小哥："小H这么乖，等下陪你玩。"'
         ];
 
         // ==================== 商店数据 ====================
         const SHOP_ITEMS = {
             food: [
-                { id: 'bone', name: '骨头', emoji: '🦴', price: 5, desc: '基础食物，去附近逛逛', level: 1 },
-                { id: 'meat', name: '肉块', emoji: '🍖', price: 15, desc: '美味肉块，跑得更远', level: 2 },
-                { id: 'steak', name: '牛排', emoji: '🥩', price: 30, desc: '高级牛排，探索远方', level: 3 },
-                { id: 'sushi', name: '寿司', emoji: '🍣', price: 50, desc: '精致料理，解锁新区域', level: 4 }
+                { id: 'bone', name: '骨头', emoji: '🦴', price: 5, desc: '基础食物，去附近逛逛', level: 1, image: 'assets/食物/骨头.png' },
+                { id: 'meat', name: '肉块', emoji: '🍖', price: 15, desc: '美味肉块，跑得更远', level: 2, image: 'assets/食物/肉块.png' },
+                { id: 'steak', name: '牛排', emoji: '🥩', price: 30, desc: '高级牛排，探索远方', level: 3, image: 'assets/食物/牛排.png' },
+                { id: 'sushi', name: '寿司', emoji: '🍣', price: 50, desc: '精致料理，解锁新区域', level: 4, image: 'assets/食物/寿司.png' },
+                { id: 'bento', name: '便当', emoji: '🍱', price: 30, desc: '美味的便当，营养丰富！小H吃饱了才能去更远的地方探险。', level: 3, image: 'assets/食物/便当.png' }
             ],
             prop: [
-                { id: 'swim_ring', name: '游泳圈', emoji: '🏊', price: 20, desc: '增加去沿海城市的概率', boostDest: ['river'] },
-                { id: 'compass', name: '指南针', emoji: '🧭', price: 35, desc: '增加去新地方的概率', boostDest: ['field', 'river', 'neighbor', 'market'] },
-                { id: 'ball', name: '玩具球', emoji: '⚽', price: 15, desc: '增加去公园的概率', boostDest: ['field'] },
-                { id: 'camera', name: '相机', emoji: '📷', price: 40, desc: '增加获得明信片概率', boostDest: [] }
+                { id: 'swim_ring', name: '游泳圈', emoji: '🏊', price: 20, desc: '增加去沿海城市的概率', boostDest: ['river'], image: 'assets/道具/游泳圈.png' },
+                { id: 'compass', name: '指南针', emoji: '🧭', price: 35, desc: '增加去新地方的概率', boostDest: ['field', 'river', 'neighbor', 'market'], image: 'assets/道具/指南针.png' },
+                { id: 'ball', name: '玩具球', emoji: '⚽', price: 15, desc: '增加去公园的概率', boostDest: ['field'], image: 'assets/道具/球.png' },
+                { id: 'camera', name: '相机', emoji: '📷', price: 40, desc: '增加获得明信片概率', boostDest: [], image: 'assets/道具/相机.png' },
+                { id: 'windmill', name: '风车', emoji: '🎠', price: 20, desc: '风车玩具，让小H在户外玩耍时更开心！增加去郊外的概率。', image: 'assets/道具/风车png.png' },
+                { id: 'bowl', name: '碗', emoji: '🥣', price: 15, desc: '精致的小碗，可以装食物。小H很喜欢！增加亲密度获取。', image: 'assets/道具/碗.png' },
+                { id: 'collar', name: '项圈', emoji: '🎀', price: 25, desc: '漂亮的项圈，让小H看起来更可爱！增加获得稀有明信片的概率。', image: 'assets/道具/项圈.png' }
             ]
         };
 
@@ -2210,6 +2673,7 @@
             roomGoBtn: document.getElementById('room-go-btn'),
             roomCourtyardBtn: document.getElementById('room-courtyard-btn'),
             roomShopBtn: document.getElementById('room-shop-btn'),
+            roomBackArrow: document.getElementById('room-back-arrow'),
             homePage: document.getElementById('home-page'),
             dayNightToggle: document.getElementById('day-night-toggle'),
             settingsBtn: document.getElementById('settings-btn'),
@@ -2256,11 +2720,8 @@
             photoViewer: document.getElementById('photo-viewer'),
             viewerClose: document.getElementById('viewer-close'),
             // 商店相关
-            shopModal: document.getElementById('shop-modal'),
-            shopClose: document.getElementById('shop-close'),
+            shopPage: document.getElementById('shop-page'),
             shopBack: document.getElementById('shop-back'),
-            shopTabs: document.querySelectorAll('.shop-tab'),
-            shopItems: document.getElementById('shop-items'),
             // 物品栏相关
             inventoryModal: document.getElementById('inventory-modal'),
             inventoryEmpty: document.getElementById('inventory-empty'),
@@ -2293,8 +2754,26 @@
             floatEl.textContent = text;
             floatEl.style.left = x + 'px';
             floatEl.style.top = y + 'px';
+            floatEl.style.transform = 'translateX(-50%)';
             document.getElementById('game-container').appendChild(floatEl);
-            setTimeout(() => floatEl.remove(), 1000);
+            setTimeout(() => floatEl.remove(), 2000);
+        }
+        
+        // 显示消息提示
+        function showMessage(text) {
+            // 创建消息元素
+            const messageEl = document.createElement('div');
+            messageEl.className = 'message-popup';
+            messageEl.textContent = text;
+            
+            // 添加到游戏容器
+            document.getElementById('game-container').appendChild(messageEl);
+            
+            // 2秒后移除
+            setTimeout(() => {
+                messageEl.classList.add('fade-out');
+                setTimeout(() => messageEl.remove(), 500);
+            }, 2000);
         }
 
         function randomInt(min, max) {
@@ -2422,12 +2901,13 @@
             currentXiaohState = 'laydown';
             xiaohLaydownFrame = 0;
 
-            // 更新两个界面的小H样式
-            if (el.xiaoh) {
-                el.xiaoh.classList.add('xiaoh-sleeping');
-            }
+            // 更新房间界面的小H样式（睡觉状态）
             if (el.xiaohCharacterRoom) {
                 el.xiaohCharacterRoom.classList.add('xiaoh-sleeping');
+            }
+            // 隐藏庭院中的小狗（夜晚睡觉时不在庭院显示）
+            if (el.xiaoh) {
+                el.xiaoh.classList.add('xiaoh-hidden');
             }
             
             xiaohLaydownTimer = setInterval(() => {
@@ -2464,9 +2944,11 @@
         function wakeUpXiaoh() {
             stopXiaohLaydownAnim();
             stopXiaohSleepIdleAnim();
-
+            
+            // 移除睡觉样式并显示庭院中的小狗
             if (el.xiaoh) {
                 el.xiaoh.classList.remove('xiaoh-sleeping');
+                el.xiaoh.classList.remove('xiaoh-hidden');
             }
             if (el.xiaohCharacterRoom) {
                 el.xiaohCharacterRoom.classList.remove('xiaoh-sleeping');
@@ -2624,18 +3106,22 @@
         // 检查是否应该睡觉（夜晚房间）
         function checkSleepCondition() {
             const roomPage = document.getElementById('room-page');
+            const homePage = document.getElementById('home-page');
             const isInRoom = roomPage && roomPage.classList.contains('active');
-            const isNight = roomPage && roomPage.classList.contains('night');
+            const isNight = (roomPage && roomPage.classList.contains('night')) || 
+                           (homePage && homePage.classList.contains('night'));
 
             if (isInRoom && isNight && gameState.xiaohStatus === 'home') {
                 if (currentXiaohState !== 'sleep_idle' && currentXiaohState !== 'laydown') {
                     startXiaohLaydownAnim();
                 }
-            } else {
+            } else if (!isNight) {
+                // 白天时，唤醒小H（无论在房间还是庭院）
                 if (currentXiaohState === 'sleep_idle' || currentXiaohState === 'laydown') {
                     wakeUpXiaoh();
                 }
             }
+            // 夜晚在庭院时，保持睡觉状态（庭院中小狗继续隐藏）
         }
 
         // ==================== 蘑菇生成系统 ====================
@@ -2846,7 +3332,9 @@
                     itemEl.dataset.itemId = item.id;
                     itemEl.dataset.category = 'food';
                     itemEl.innerHTML = `
-                        <div class="item-icon">${item.emoji}</div>
+                        <div class="item-icon">
+                            <img src="${item.image}" alt="${item.name}" class="item-image">
+                        </div>
                         <div class="item-name">${item.name}</div>
                         <div class="item-count">${gameState.inventory[item.id]}</div>
                     `;
@@ -2874,7 +3362,9 @@
                     itemEl.dataset.itemId = item.id;
                     itemEl.dataset.category = 'prop';
                     itemEl.innerHTML = `
-                        <div class="item-icon">${item.emoji}</div>
+                        <div class="item-icon">
+                            <img src="${item.image}" alt="${item.name}" class="item-image">
+                        </div>
                         <div class="item-name">${item.name}</div>
                         <div class="item-count">${gameState.inventory[item.id]}</div>
                     `;
@@ -2954,12 +3444,21 @@
         // ==================== 出发逻辑 ====================
         el.goBtn.addEventListener('click', () => {
             playClickSound();
+            // 检查小狗是否正在睡觉（同时检查状态变量和CSS类）
+            const isSleeping = currentXiaohState === 'sleep_idle' || 
+                               currentXiaohState === 'laydown' ||
+                               (el.xiaohCharacterRoom && el.xiaohCharacterRoom.classList.contains('xiaoh-sleeping'));
+            
+            if (isSleeping) {
+                showMessage('小H正在睡觉，明天再出发吧！');
+                return;
+            }
             if (gameState.xiaohStatus === 'away') {
-                showFloatText(window.innerWidth / 2, window.innerHeight * 0.7, '小H已经出门啦！');
+                showMessage('小H已经出门啦！');
                 return;
             }
             if (gameState.xiaohStatus === 'return') {
-                showFloatText(window.innerWidth / 2, window.innerHeight * 0.7, '先领取奖励吧！');
+                showMessage('先领取奖励吧！');
                 return;
             }
 
@@ -2978,10 +3477,16 @@
             playClickSound();
             el.inventoryModal.classList.remove('active');
             renderShop('food');
-            el.shopModal.classList.add('active');
-            // 显示返回物品栏按钮，隐藏关闭按钮
-            el.shopBack.style.display = 'block';
-            el.shopClose.style.display = 'none';
+            // 判断来源页面（检查哪个页面当前显示）
+            const isInRoom = el.roomPage.classList.contains('active');
+            gameState.previousPage = isInRoom ? 'room' : 'home';
+            // 隐藏当前页面，显示商店页面
+            if (isInRoom) {
+                el.roomPage.style.display = 'none';
+            } else {
+                el.homePage.style.display = 'none';
+            }
+            el.shopPage.style.display = 'block';
         });
 
         // 确认选择物品出发
@@ -3019,49 +3524,173 @@
             startTrip(selectedFood, destination, reward, destKey);
         });
 
+        // 商品数据
+        const SHOP_GOODS = {
+            windmill: { name: '风车', price: 20, type: 'prop', inventoryId: 'windmill', 
+                       desc: '风车玩具，让小H在户外玩耍时更开心！增加去郊外的概率。' },
+            bowl: { name: '碗', price: 15, type: 'prop', inventoryId: 'bowl', 
+                   desc: '精致的小碗，可以装食物。小H很喜欢！增加亲密度获取。' },
+            collar: { name: '项圈', price: 25, type: 'prop', inventoryId: 'collar', 
+                     desc: '漂亮的项圈，让小H看起来更可爱！增加获得稀有明信片的概率。' },
+            bento: { name: '便当', price: 30, type: 'food', inventoryId: 'bento', 
+                    desc: '美味的便当，营养丰富！小H吃饱了才能去更远的地方探险。' },
+            bone: { name: '骨头', price: 5, type: 'food', inventoryId: 'bone', 
+                   desc: '基础食物，小H的最爱！可以去附近逛逛。' },
+            meat: { name: '羊排', price: 15, type: 'food', inventoryId: 'meat', 
+                   desc: '鲜嫩羊排，营养丰富！小H可以跑得更远。' },
+            steak: { name: '牛排', price: 30, type: 'food', inventoryId: 'steak', 
+                    desc: '高级牛排，肉质鲜嫩！小H可以探索远方。' },
+            sushi: { name: '寿司', price: 50, type: 'food', inventoryId: 'sushi', 
+                    desc: '精致料理，美味无比！解锁新区域必备。' },
+            ball: { name: '玩具球', price: 15, type: 'prop', inventoryId: 'ball', 
+                   desc: '彩色玩具球，小H的最爱！增加去公园的概率。' },
+            swim_ring: { name: '游泳圈', price: 20, type: 'prop', inventoryId: 'swim_ring', 
+                        desc: '漂亮的游泳圈！增加去河边的概率。' },
+            compass: { name: '指南针', price: 35, type: 'prop', inventoryId: 'compass', 
+                      desc: '古老的指南针！增加去新地方探险的概率。' }
+        };
+        
+        let selectedShopItem = null;
+        
         // ==================== 商店逻辑 ====================
         function renderShop(tab) {
-            el.shopTabs.forEach(t => t.classList.remove('active'));
-            document.querySelector(`.shop-tab[data-tab="${tab}"]`).classList.add('active');
-
-            el.shopItems.innerHTML = '';
-            SHOP_ITEMS[tab].forEach(item => {
-                const itemEl = document.createElement('div');
-                itemEl.className = `shop-item ${gameState.mushrooms < item.price ? 'disabled' : ''}`;
-                itemEl.innerHTML = `
-                    <div class="item-icon">${item.emoji}</div>
-                    <div class="item-name">${item.name}</div>
-                    <div class="item-desc">${item.desc}</div>
-                    <div class="item-price">🍄 ${item.price}</div>
-                    <button class="buy-btn" ${gameState.mushrooms < item.price ? 'disabled' : ''} data-item-id="${item.id}">购买</button>
-                `;
-                el.shopItems.appendChild(itemEl);
-            });
-
-            // 添加购买事件
-            document.querySelectorAll('.buy-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    playClickSound();
-                    const itemId = e.target.dataset.itemId;
-                    buyItem(itemId);
+            // 更新蘑菇币显示
+            document.getElementById('shop-mushrooms-count').textContent = gameState.mushrooms;
+            
+            // 绑定商品点击事件
+            document.querySelectorAll('.shop-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    selectShopItem(this.dataset.item);
                 });
             });
-        }
-
-        function buyItem(itemId) {
-            const item = getItemById(itemId);
-            if (!item || gameState.mushrooms < item.price) return;
-
-            gameState.mushrooms -= item.price;
-            gameState.inventory[itemId]++;
-            updateMushroomDisplay();
-            saveGame();
-
-            showFloatText(window.innerWidth / 2, window.innerHeight * 0.5, `购买成功！${item.emoji}`);
             
-            // 重新渲染商店（价格检查）
-            const activeTab = document.querySelector('.shop-tab.active').dataset.tab;
-            renderShop(activeTab);
+            // 绑定购买按钮
+            document.getElementById('shop-buy-btn').addEventListener('click', buyShopItem);
+            
+            // 分页功能
+            let currentPage = 1;
+            const itemsPerPage = 4;
+            const allShopItems = Array.from(document.querySelectorAll('.shop-item'));
+            const totalPages = Math.ceil(allShopItems.length / itemsPerPage);
+            
+            function updateShopPage(page) {
+                currentPage = page;
+                
+                // 隐藏所有商品
+                allShopItems.forEach((item, index) => {
+                    const itemPage = Math.floor(index / itemsPerPage) + 1;
+                    item.style.display = itemPage === page ? 'flex' : 'none';
+                });
+                
+                // 更新分页按钮显示
+                document.getElementById('shop-prev-btn').style.display = page <= 1 ? 'none' : 'block';
+                document.getElementById('shop-next-btn').style.display = page >= totalPages ? 'none' : 'block';
+                
+                // 更新页码显示
+                document.getElementById('shop-page-indicator').textContent = `${page} / ${totalPages}`;
+                
+                // 清除选中状态
+                selectedShopItem = null;
+                document.querySelectorAll('.shop-item').forEach(item => {
+                    item.classList.remove('selected');
+                });
+                document.getElementById('shop-description-text').textContent = '点击商品查看详情';
+                document.getElementById('shop-buy-btn').disabled = true;
+            }
+            
+            // 绑定分页按钮
+            document.getElementById('shop-prev-btn').addEventListener('click', () => {
+                playClickSound();
+                if (currentPage > 1) {
+                    updateShopPage(currentPage - 1);
+                }
+            });
+            
+            document.getElementById('shop-next-btn').addEventListener('click', () => {
+                playClickSound();
+                if (currentPage < totalPages) {
+                    updateShopPage(currentPage + 1);
+                }
+            });
+            
+            // 初始化第一页
+            updateShopPage(1);
+        }
+        
+        function selectShopItem(itemId) {
+            // 移除之前的选中状态
+            document.querySelectorAll('.shop-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            
+            // 添加新的选中状态
+            const itemEl = document.querySelector(`.shop-item[data-item="${itemId}"]`);
+            if (itemEl) {
+                itemEl.classList.add('selected');
+                selectedShopItem = itemId;
+                
+                // 更新描述
+                const goods = SHOP_GOODS[itemId];
+                if (goods) {
+                    document.getElementById('shop-description-text').textContent = goods.desc;
+                }
+                
+                // 更新购买按钮状态
+                updateBuyButton();
+            }
+        }
+        
+        function updateBuyButton() {
+            const buyBtn = document.getElementById('shop-buy-btn');
+            
+            if (!selectedShopItem) {
+                buyBtn.disabled = true;
+                buyBtn.textContent = '请选择商品';
+                return;
+            }
+            
+            const goods = SHOP_GOODS[selectedShopItem];
+            if (!goods) {
+                buyBtn.disabled = true;
+                buyBtn.textContent = '请选择商品';
+                return;
+            }
+            
+            if (gameState.mushrooms >= goods.price) {
+                buyBtn.disabled = false;
+                buyBtn.textContent = `购买 (${goods.price} 蘑菇币)`;
+            } else {
+                buyBtn.disabled = true;
+                buyBtn.textContent = '蘑菇币不足';
+            }
+        }
+        
+        function buyShopItem() {
+            if (!selectedShopItem) return;
+            
+            const goods = SHOP_GOODS[selectedShopItem];
+            if (!goods || gameState.mushrooms < goods.price) return;
+            
+            playClickSound();
+            
+            // 扣除蘑菇币
+            gameState.mushrooms -= goods.price;
+            
+            // 添加到物品栏
+            if (!gameState.inventory[goods.inventoryId]) {
+                gameState.inventory[goods.inventoryId] = 0;
+            }
+            gameState.inventory[goods.inventoryId]++;
+            
+            // 更新显示
+            document.getElementById('shop-mushrooms-count').textContent = gameState.mushrooms;
+            updateMushroomDisplay();
+            updateBuyButton();
+            
+            // 显示购买成功提示
+            showFloatText(window.innerWidth / 2, window.innerHeight / 2, `购买成功！获得${goods.name}！`);
+            
+            saveGame();
         }
 
         // 更新屋子蘑菇币显示
@@ -3102,13 +3731,22 @@
             el.roomPage.classList.remove('active');
             el.roomPage.style.display = 'none';
             el.homePage.style.display = 'block';
-            // 返回庭院时唤醒小H
-            checkSleepCondition();
+            // 如果是夜晚且小狗正在睡觉，不唤醒（庭院中保持隐藏）
+            // checkSleepCondition 会在适当的时机自动处理
         });
 
         // 屋子探险按钮
         el.roomGoBtn.addEventListener('click', () => {
             playClickSound();
+            // 检查小狗是否正在睡觉（同时检查状态变量和CSS类）
+            const isSleeping = currentXiaohState === 'sleep_idle' || 
+                               currentXiaohState === 'laydown' ||
+                               (el.xiaohCharacterRoom && el.xiaohCharacterRoom.classList.contains('xiaoh-sleeping'));
+            
+            if (isSleeping) {
+                showMessage('小H正在睡觉，明天再出发吧！');
+                return;
+            }
             renderInventory();
             el.inventoryModal.classList.add('active');
         });
@@ -3117,9 +3755,21 @@
         el.roomShopBtn.addEventListener('click', () => {
             playClickSound();
             renderShop('food');
-            el.shopModal.classList.add('active');
-            el.shopClose.style.display = 'block';
-            el.shopBack.style.display = 'none';
+            // 记录来源页面
+            gameState.previousPage = 'room';
+            // 隐藏屋子页面，显示商店页面
+            el.roomPage.style.display = 'none';
+            el.shopPage.style.display = 'block';
+        });
+
+        // 返回庭院箭头按钮
+        el.roomBackArrow.addEventListener('click', () => {
+            playClickSound();
+            playDoorSound();
+            el.roomPage.classList.remove('active');
+            el.roomPage.style.display = 'none';
+            el.homePage.style.display = 'block';
+            // 如果是夜晚且小狗正在睡觉，不唤醒（庭院中保持隐藏）
         });
 
         // 设置按钮
@@ -3150,35 +3800,24 @@
         el.shopBtn.addEventListener('click', () => {
             playClickSound();
             renderShop('food');
-            el.shopModal.classList.add('active');
-            // 显示关闭按钮，隐藏返回物品栏按钮
-            el.shopClose.style.display = 'block';
-            el.shopBack.style.display = 'none';
+            // 记录来源页面
+            gameState.previousPage = 'home';
+            // 隐藏主页，显示商店页面
+            el.homePage.style.display = 'none';
+            el.shopPage.style.display = 'block';
         });
 
-        // 商店关闭（返回主页）
-        el.shopClose.addEventListener('click', () => {
-            playClickSound();
-            el.shopModal.classList.remove('active');
-        });
-
-        // 商店返回物品栏
+        // 商店返回按钮
         el.shopBack.addEventListener('click', () => {
             playClickSound();
-            el.shopModal.classList.remove('active');
-            // 重新渲染物品栏（可能已购买物品）
-            renderInventory();
-            el.inventoryModal.classList.add('active');
-            // 恢复按钮状态
-            el.shopBack.style.display = 'none';
-            el.shopClose.style.display = 'block';
-        });
-
-        // 商店标签切换
-        el.shopTabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                renderShop(tab.dataset.tab);
-            });
+            // 隐藏商店页面
+            el.shopPage.style.display = 'none';
+            // 根据来源页面返回
+            if (gameState.previousPage === 'room') {
+                el.roomPage.style.display = 'block';
+            } else {
+                el.homePage.style.display = 'block';
+            }
         });
 
         // ==================== 目的地选择逻辑 ====================
@@ -3878,15 +4517,24 @@
         // 手动切换昼夜
         el.dayNightToggle.addEventListener('click', () => {
             const homePage = document.getElementById('home-page');
+            const roomPage = document.getElementById('room-page');
             
             if (homePage.classList.contains('day')) {
                 homePage.classList.remove('day');
                 homePage.classList.add('night');
+                roomPage.classList.remove('day');
+                roomPage.classList.add('night');
                 el.dayNightToggle.innerHTML = '☀️ 切换白天';
             } else {
                 homePage.classList.remove('night');
                 homePage.classList.add('day');
+                roomPage.classList.remove('night');
+                roomPage.classList.add('day');
                 el.dayNightToggle.innerHTML = '🌙 切换夜晚';
+                // 切换到白天时，唤醒睡觉的小狗
+                if (currentXiaohState === 'sleep_idle' || currentXiaohState === 'laydown') {
+                    wakeUpXiaoh();
+                }
             }
             
             // 更新门图片
