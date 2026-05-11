@@ -839,67 +839,67 @@
         
         /* 左上角商品 - 手动设置位置 */
         .shop-item:nth-child(1) {
-            top: 300px;    /* 距离顶部 */
+            top: 280px;    /* 距离顶部 */
             left: 25px;   /* 距离左侧 */
         }
         
         /* 右上角商品 - 手动设置位置 */
         .shop-item:nth-child(2) {
-            top: 300px;     /* 距离顶部 */
+            top: 280px;     /* 距离顶部 */
             right: 25px;   /* 距离右侧 */
         }
         
         /* 左下角商品 - 手动设置位置 */
         .shop-item:nth-child(3) {
-            top: 515px;    /* 距离顶部 */
+            top: 490px;    /* 距离顶部 */
             left: 25px;    /* 距离左侧 */
         }
         
         /* 右下角商品 - 手动设置位置 */
         .shop-item:nth-child(4) {
-            top: 515px;    /* 距离顶部 */
+            top: 490px;    /* 距离顶部 */
             right: 25px;   /* 距离右侧 */
         }
         
         /* 第2页 - 左上角商品 */
         .shop-item:nth-child(5) {
-            top: 300px;    /* 距离顶部 */
+            top: 280px;    /* 距离顶部 */
             left: 25px;    /* 距离左侧 */
         }
         
         /* 第2页 - 右上角商品 */
         .shop-item:nth-child(6) {
-            top: 300px;    /* 距离顶部 */
+            top: 280px;    /* 距离顶部 */
             right: 25px;   /* 距离右侧 */
         }
         
         /* 第2页 - 左下角商品 */
         .shop-item:nth-child(7) {
-            top: 515px;    /* 距离顶部 */
+            top: 490px;    /* 距离顶部 */
             left: 25px;    /* 距离左侧 */
         }
         
         /* 第2页 - 右下角商品 */
         .shop-item:nth-child(8) {
-            top: 515px;    /* 距离顶部 */
+            top: 490px;    /* 距离顶部 */
             right: 25px;   /* 距离右侧 */
         }
         
         /* 第3页 - 左上角商品 */
         .shop-item:nth-child(9) {
-            top: 300px;    /* 距离顶部 */
+            top: 280px;    /* 距离顶部 */
             left: 25px;    /* 距离左侧 */
         }
         
         /* 第3页 - 右上角商品 */
         .shop-item:nth-child(10) {
-            top: 300px;    /* 距离顶部 */
+            top: 280px;    /* 距离顶部 */
             right: 25px;   /* 距离右侧 */
         }
         
         /* 第3页 - 左下角商品 */
         .shop-item:nth-child(11) {
-            top: 515px;    /* 距离顶部 */
+            top: 490px;    /* 距离顶部 */
             left: 25px;    /* 距离左侧 */
         }
         
@@ -3663,7 +3663,7 @@
             updateBuyButton();
             
             // 显示购买成功提示
-            showFloatText(window.innerWidth / 2, window.innerHeight / 2, `购买成功！获得${goods.name}！`);
+            showMessage(`购买成功！获得${goods.name}！`);
             
             saveGame();
         }
