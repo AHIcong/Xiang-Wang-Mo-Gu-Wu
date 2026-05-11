@@ -386,28 +386,7 @@
             display: none !important;
         }
 
-        /* 小屋按钮 */
-        #room-btn {
-            position: absolute;
-            bottom: 15%;
-            right: 20px;
-            transform: none;
-            width: 100px;
-            height: 45px;
-            background: linear-gradient(180deg, #96CEB4 0%, #88D8B0 100%);
-            border: none;
-            border-radius: 20px;
-            color: white;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(150, 206, 180, 0.4);
-            z-index: 100;
-        }
-        #room-btn:hover {
-            transform: scale(1.02);
-        }
-        #room-btn:active { transform: scale(0.95); }
+
 
         /* 门按钮：白天为小框对齐门洞；夜间为全屏锚点 + cover（撤销「昼夜同一全屏」后的状态） */
         #door-btn {
@@ -561,29 +540,6 @@
             transform: scale(1.02);
         }
         #room-shop-btn:active { transform: scale(0.95); }
-        
-        /* 屋子庭院按钮 */
-        #room-courtyard-btn {
-            position: absolute;
-            bottom: 15%;
-            right: 20px;
-            transform: none;
-            width: 100px;
-            height: 45px;
-            background: linear-gradient(180deg, #FFEAA7 0%, #FDCB6E 100%);
-            border: none;
-            border-radius: 20px;
-            color: #5D3A1A;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(253, 203, 110, 0.4);
-            z-index: 100;
-        }
-        #room-courtyard-btn:hover {
-            transform: scale(1.02);
-        }
-        #room-courtyard-btn:active { transform: scale(0.95); }
         
         /* 返回庭院箭头按钮 */
         #room-back-arrow {
@@ -2076,9 +2032,6 @@
             <!-- 出发按钮 -->
             <button id="go-btn">🚀 探险</button>
             
-            <!-- 小屋按钮 -->
-            <button id="room-btn">🏠 小屋</button>
-            
             <!-- 商店按钮 -->
             <button id="shop-btn">🛒 商店</button>
         </div>
@@ -2144,9 +2097,6 @@
             
             <!-- 探险按钮 -->
             <button id="room-go-btn">🚀 探险</button>
-            
-            <!-- 返回庭院按钮 -->
-            <button id="room-courtyard-btn">🌳 庭院</button>
             
             <!-- 返回庭院箭头按钮 -->
             <button id="room-back-arrow">
@@ -2702,12 +2652,10 @@
         // ==================== DOM元素 ====================
         const el = {
             mushroomNum: document.getElementById('mushroom-num'),
-            roomBtn: document.getElementById('room-btn'),
             roomPage: document.getElementById('room-page'),
             roomAlbumBtn: document.getElementById('room-album-btn'),
             roomMushroomNum: document.getElementById('room-mushroom-num'),
             roomGoBtn: document.getElementById('room-go-btn'),
-            roomCourtyardBtn: document.getElementById('room-courtyard-btn'),
             roomShopBtn: document.getElementById('room-shop-btn'),
             roomBackArrow: document.getElementById('room-back-arrow'),
             homePage: document.getElementById('home-page'),
@@ -3511,6 +3459,9 @@
                 el.homePage.style.display = 'none';
             }
             el.shopPage.style.display = 'block';
+            
+            // 隐藏全屏背景，让shop-page自己的背景显示
+            updateFullscreenBg('none');
         });
 
         // 确认选择物品出发
@@ -3738,32 +3689,9 @@
         }
 
         // 进入小屋
-        el.roomBtn.addEventListener('click', () => {
-            playClickSound();
-            updateRoomBackground();
-            updateRoomMushroomDisplay();
-            el.roomPage.classList.add('active');
-            el.roomPage.style.display = 'block';
-            el.homePage.style.display = 'none';
-            // 检查是否需要睡觉
-            setTimeout(checkSleepCondition, 100);
-        });
 
-        // 返回庭院
-        el.roomCourtyardBtn.addEventListener('click', () => {
-            playClickSound();
-            el.roomPage.classList.remove('active');
-            el.roomPage.style.display = 'none';
-            el.homePage.style.display = 'block';
-            
-            // 更新全屏背景为庭院背景
-            const homePage = document.getElementById('home-page');
-            const bgClass = homePage.classList.contains('day') ? 'home-day' : 'home-night';
-            updateFullscreenBg(bgClass);
-            
-            // 如果是夜晚且小狗正在睡觉，不唤醒（庭院中保持隐藏）
-            // checkSleepCondition 会在适当的时机自动处理
-        });
+
+
 
         // 屋子探险按钮
         el.roomGoBtn.addEventListener('click', () => {
@@ -3791,8 +3719,8 @@
             el.roomPage.style.display = 'none';
             el.shopPage.style.display = 'block';
             
-            // 更新全屏背景为商店背景
-            updateFullscreenBg('shop');
+            // 隐藏全屏背景，让shop-page自己的背景显示
+            updateFullscreenBg('none');
         });
 
         // 返回庭院箭头按钮
@@ -3802,6 +3730,12 @@
             el.roomPage.classList.remove('active');
             el.roomPage.style.display = 'none';
             el.homePage.style.display = 'block';
+            
+            // 恢复全屏背景为庭院背景
+            const homePage = document.getElementById('home-page');
+            const bgClass = homePage.classList.contains('day') ? 'home-day' : 'home-night';
+            updateFullscreenBg(bgClass);
+            
             // 如果是夜晚且小狗正在睡觉，不唤醒（庭院中保持隐藏）
         });
 
@@ -3839,8 +3773,8 @@
             el.homePage.style.display = 'none';
             el.shopPage.style.display = 'block';
             
-            // 更新全屏背景为商店背景
-            updateFullscreenBg('shop');
+            // 隐藏全屏背景，让shop-page自己的背景显示
+            updateFullscreenBg('none');
         });
 
         // 商店返回按钮
@@ -3851,13 +3785,11 @@
             // 根据来源页面返回
             if (gameState.previousPage === 'room') {
                 el.roomPage.style.display = 'block';
-                // 更新全屏背景为屋子背景
-                const homePage = document.getElementById('home-page');
-                const bgClass = homePage.classList.contains('day') ? 'room-day' : 'room-night';
-                updateFullscreenBg(bgClass);
+                // 保持全屏背景隐藏，让room-page自己的背景显示
+                updateFullscreenBg('none');
             } else {
                 el.homePage.style.display = 'block';
-                // 更新全屏背景为庭院背景
+                // 恢复全屏背景为庭院背景
                 const homePage = document.getElementById('home-page');
                 const bgClass = homePage.classList.contains('day') ? 'home-day' : 'home-night';
                 updateFullscreenBg(bgClass);
@@ -4516,7 +4448,13 @@
             if (!fullscreenBg) return;
             
             fullscreenBg.classList.remove('home-day', 'home-night', 'room-day', 'room-night', 'shop');
-            fullscreenBg.classList.add(newClass);
+            
+            if (newClass === 'none') {
+                fullscreenBg.style.display = 'none';
+            } else {
+                fullscreenBg.style.display = 'block';
+                fullscreenBg.classList.add(newClass);
+            }
         }
 
         // ==================== 背景时间切换 ====================
@@ -4568,10 +4506,8 @@
             el.roomPage.style.display = 'block';
             el.homePage.style.display = 'none';
             
-            // 更新全屏背景为屋子背景
-            const homePage = document.getElementById('home-page');
-            const bgClass = homePage.classList.contains('day') ? 'room-day' : 'room-night';
-            updateFullscreenBg(bgClass);
+            // 隐藏全屏背景，让room-page自己的背景显示
+            updateFullscreenBg('none');
             
             setTimeout(checkSleepCondition, 100);
         });
@@ -4580,25 +4516,30 @@
         el.dayNightToggle.addEventListener('click', () => {
             const homePage = document.getElementById('home-page');
             const roomPage = document.getElementById('room-page');
+            const shopPage = el.shopPage;
             
             if (homePage.classList.contains('day')) {
                 homePage.classList.remove('day');
                 homePage.classList.add('night');
                 roomPage.classList.remove('day');
                 roomPage.classList.add('night');
-                updateFullscreenBg('home-night');
                 el.dayNightToggle.innerHTML = '☀️ 切换白天';
             } else {
                 homePage.classList.remove('night');
                 homePage.classList.add('day');
                 roomPage.classList.remove('night');
                 roomPage.classList.add('day');
-                updateFullscreenBg('home-day');
                 el.dayNightToggle.innerHTML = '🌙 切换夜晚';
                 // 切换到白天时，唤醒睡觉的小狗
                 if (currentXiaohState === 'sleep_idle' || currentXiaohState === 'laydown') {
                     wakeUpXiaoh();
                 }
+            }
+            
+            // 只在庭院场景下更新全屏背景
+            if (homePage.style.display !== 'none') {
+                const bgClass = homePage.classList.contains('day') ? 'home-day' : 'home-night';
+                updateFullscreenBg(bgClass);
             }
             
             // 更新门图片
